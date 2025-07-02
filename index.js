@@ -1,5 +1,5 @@
 $("#searchInp").on("keyup", function () {
-  // your code
+  console.log("Search input changed");
 });
 
 $("#refreshBtn").click(function () {
@@ -35,8 +35,9 @@ $("#locationsBtn").click(function () {
 });
 
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
+console.log(e.relatedTarget);
   $.ajax({
-    url: "https://resources.itcareerswitch.co.uk/companydirectory/libs/php/getPersonnelByID.php",
+    url: "libs/php/getPersonnelByID.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -46,6 +47,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
       id: $(e.relatedTarget).attr("data-id"),
     },
     success: function (result) {
+      console.log(result);
       var resultCode = result.status.code;
 
       if (resultCode == 200) {
@@ -61,6 +63,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
 
         $("#editPersonnelDepartment").html("");
 
+        // Populate the department select element with options
         $.each(result.data.department, function () {
           $("#editPersonnelDepartment").append(
             $("<option>", {
@@ -96,4 +99,121 @@ $("#editPersonnelForm").on("submit", function (e) {
   e.preventDefault();
 
   // AJAX call to save form data
+});
+
+// TESTING +++++++++++++++++++++++++
+
+// populate the Personnel table with data from the database
+$(document).ready(function () {
+  // Populate Personnel table
+  $.ajax({
+    url: "libs/php/getAllEmployees.php",
+    type: "POST",
+    dataType: "json",
+    data: {},
+    success: function (result) {
+      if (result.status.code === '200' && result.data && Array.isArray(result.data)) {
+        let rowsHtml = result.data
+          .map((person) => {
+            return `
+              <tr>
+                <td class="align-middle text-nowrap">${person.lastName}, ${person.firstName}</td>
+                <td class="align-middle text-nowrap d-none d-md-table-cell">
+                  ${person.jobTitle}
+                </td>
+                <td class="align-middle text-nowrap d-none d-md-table-cell">
+                  ${person.location}
+                </td>
+                <td class="align-middle text-nowrap d-none d-md-table-cell">
+                  ${person.email}
+                </td>
+                <td class="text-end text-nowrap">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editPersonnelModal"
+                    data-id="${person.id}"
+                  >
+                    <i class="fa-solid fa-pencil fa-fw"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deletePersonnelModal"
+                    data-id="${person.id}"
+                  >
+                    <i class="fa-solid fa-trash fa-fw"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+        $("#personnelTableBody").html(rowsHtml);
+      } else {
+        $("#personnelTableBody").html(
+          `<tr><td colspan="5" class="text-center text-danger">No personnel found.</td></tr>`
+        );
+      }
+    },
+    error: function () {
+      $("#personnelTableBody").html(
+        `<tr><td colspan="5" class="text-center text-danger">Error fetching personnel data</td></tr>`
+      );
+    },
+  });
+
+  // Populate Departments table
+  $.ajax({
+    url: "libs/php/getAllDepartments.php",
+    type: "POST",
+    dataType: "json",
+    data: {},
+    success: function (result) {
+      if (result.status.code === '200' && result.data && Array.isArray(result.data)) {
+        let rowsHtml = result.data
+          .map((dept) => {
+            return `
+              <tr>
+                <td class="align-middle text-nowrap">${dept.name}</td>
+                <td class="align-middle text-nowrap d-none d-md-table-cell">
+                  ${dept.location}
+                </td>
+                <td class="align-middle text-end text-nowrap">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editDepartmentModal"
+                    data-id="${dept.id}"
+                  >
+                    <i class="fa-solid fa-pencil fa-fw"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm deleteDepartmentBtn"
+                    data-id="${dept.id}"
+                  >
+                    <i class="fa-solid fa-trash fa-fw"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+        $("#departmentTableBody").html(rowsHtml);
+      } else {
+        $("#departmentTableBody").html(
+          `<tr><td colspan="3" class="text-center text-danger">No departments found.</td></tr>`
+        );
+      }
+    },
+    error: function () {
+      $("#departmentTableBody").html(
+        `<tr><td colspan="3" class="text-center text-danger">Error fetching department data</td></tr>`
+      );
+    },
+  });
 });

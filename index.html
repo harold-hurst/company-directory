@@ -18,8 +18,8 @@
     <link href="styles.css" rel="stylesheet" />
   </head>
   <body>
-    <section>
-      <div class="appHeader">
+    <section class="p-3" style="border: 1px solid red">
+      <div class="appHeader" style="border: 1px solid green">
         <div class="row">
           <div class="col">
             <input
@@ -93,8 +93,11 @@
         </ul>
       </div>
 
-      <div class="tab-content bg-white">
+      <div class="tab-content bg-white" style="border: 1px solid blue">
+
+        <!-- Personnel tab content -->
         <div
+          style="border: 1px solid purple"
           class="tab-pane show active"
           id="personnel-tab-pane"
           role="tabpanel"
@@ -103,45 +106,11 @@
         >
           <table class="table table-hover">
             <tbody id="personnelTableBody">
-              <!-- Below is an example row. Create a JS function that interogates the database and 
-          dynamically creates the HTML for the table contents. -->
-
-              <tr>
-                <td class="align-middle text-nowrap">Ace, Tamarra</td>
-                <td class="align-middle text-nowrap d-none d-md-table-cell">
-                  Support
-                </td>
-                <td class="align-middle text-nowrap d-none d-md-table-cell">
-                  Munich
-                </td>
-                <td class="align-middle text-nowrap d-none d-md-table-cell">
-                  tacem@vinaora.com
-                </td>
-                <td class="text-end text-nowrap">
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editPersonnelModal"
-                    data-id="23"
-                  >
-                    <i class="fa-solid fa-pencil fa-fw"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deletePersonnelModal"
-                    data-id="23"
-                  >
-                    <i class="fa-solid fa-trash fa-fw"></i>
-                  </button>
-                </td>
-              </tr>
+              <!-- Table rows to be inserted on document load. -->
             </tbody>
           </table>
         </div>
-
+        <!-- Departments tab content -->
         <div
           class="tab-pane"
           id="departments-tab-pane"
@@ -181,7 +150,7 @@
             </tbody>
           </table>
         </div>
-
+        <!-- Locations tab content -->
         <div
           class="tab-pane"
           id="locations-tab-pane"
@@ -210,11 +179,12 @@
         </div>
       </div>
 
-      <footer class="border-top text-center fw-bold">
+      <footer class="border-top text-center fw-bold" style="border: 1px solid orange">
         <p class="fw-light my-3">Company Directory version 1.0</p>
       </footer>
     </section>
 
+    <!-- Edit personell modal -->
     <div
       id="editPersonnelModal"
       class="modal fade"
@@ -325,6 +295,6 @@
     <!-- Bootstrap JS (with Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="script.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>
