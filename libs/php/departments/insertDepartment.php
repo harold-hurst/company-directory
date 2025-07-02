@@ -1,7 +1,7 @@
 <?php
 
 	// example use from browser
-	// http://localhost/companydirectory/libs/php/getAll.php
+	// http://localhost/companydirectory/libs/php/insertDepartment.php?name=New%20Department&locationID=<id>
 
 	// remove next two lines for production
 	
@@ -9,14 +9,15 @@
 	error_reporting(E_ALL);
 
 	$executionStartTime = microtime(true);
-
-	include("config.php");
+	
+	// this includes the login details
+	
+	include("../config.php");
 
 	header('Content-Type: application/json; charset=UTF-8');
 
 	$conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname, $cd_port, $cd_socket);
 
-	// if the connection fails, return an error message
 	if (mysqli_connect_errno()) {
 		
 		$output['status']['code'] = "300";
@@ -33,17 +34,16 @@
 
 	}	
 
-	// SQL does not accept parameters and so is not prepared
+	// SQL statement accepts parameters and so is prepared to avoid SQL injection.
+	// $_REQUEST used for development / debugging. Remember to change to $_POST for production
 
-	// write a query to select all personnel data
-	$query = 'SELECT p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, l.name as location FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name';
+	$query = $conn->prepare('INSERT INTO department (name, locationID) VALUES(?,?)');
 
-	// result of querying the database
-	$result = $conn->query($query);
+	$query->bind_param("si", $_REQUEST['name'], $_REQUEST['locationID']);
+
+	$query->execute();
 	
-	// if no results are returned, return an error message
-	// this could happen if the database is empty or the query fails
-	if (!$result) {
+	if (false === $query) {
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";
@@ -57,21 +57,12 @@
 		exit;
 
 	}
-   
-   	$data = [];
-
-	// build response
-	while ($row = mysqli_fetch_assoc($result)) {
-
-		array_push($data, $row);
-
-	}
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	$output['data'] = $data;
+	$output['data'] = [];
 	
 	mysqli_close($conn);
 

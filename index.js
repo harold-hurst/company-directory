@@ -1,25 +1,131 @@
 $("#searchInp").on("keyup", function () {
-  console.log("Search input changed");
+  const value = $(this).val().toLowerCase();
+  // Find the active table body
+  let tableBody;
+  if ($("#personnelBtn").hasClass("active")) {
+    tableBody = $("#personnelTableBody");
+  } else if ($("#departmentsBtn").hasClass("active")) {
+    tableBody = $("#departmentTableBody");
+  } else {
+    tableBody = $("#locationTableBody");
+  }
+
+  tableBody.find("tr").each(function () {
+    const rowText = $(this).text().toLowerCase();
+    $(this).toggle(rowText.indexOf(value) > -1);
+  });
 });
 
 $("#refreshBtn").click(function () {
-  if ($("#personnelBtn").hasClass("active")) {
-    // Refresh personnel table
+  // Clear the search input
+  $("#searchInp").val("");
+  // Programmatically trigger a change (keyup) event on the input
+  $("#searchInp").trigger("keyup");
+});
+
+$("#addBtn").click(function () {
+  if ($("#departmentsBtn").hasClass("active")) {
+    // Open the add location modal
+    $("#addDepartmentModal").modal("show");
+  } else if ($("#locationsBtn").hasClass("active")) {
+    // Open the add location modal
+    $("#addLocationModal").modal("show");
   } else {
-    if ($("#departmentsBtn").hasClass("active")) {
-      // Refresh department table
-    } else {
-      // Refresh location table
-    }
+    // Open the add personnel modal
+    $("#addPersonnelModal").modal("show");
   }
 });
 
 $("#filterBtn").click(function () {
-  // Open a modal of your own design that allows the user to apply a filter to the personnel table on either department or location
-});
+  // Show the modal
+  $("#filterPersonnelModal").modal("show");
 
-$("#addBtn").click(function () {
-  // Replicate the logic of the refresh button click to open the add modal for the table that is currently on display
+  $.ajax({
+    url: "libs/php/locations/getAllLocations.php",
+    type: "POST",
+    dataType: "json",
+    data: {},
+    success: function (result) {
+      var resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        // Populate the select with locations
+        $.each(result.data, function () {
+          $("#filterLocation").append(
+            $("<option>", {
+              value: this.name,
+              text: this.name,
+            })
+          );
+        });
+      } else {
+        $("#filterPersonnelModalLabel .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#filterPersonnelModalLabel .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    },
+  });
+
+  $.ajax({
+    url: "libs/php/departments/getAllDepartments.php",
+    type: "POST",
+    dataType: "json",
+    data: {},
+    success: function (result) {
+      var resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        // Populate the select with locations
+        $.each(result.data, function () {
+          $("#filterDepartment").append(
+            $("<option>", {
+              value: this.name,
+              text: this.name,
+            })
+          );
+        });
+      } else {
+        $("#filterDepartmentModalLabel .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#filterDepartmentModalLabel .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    },
+  });
+
+  // Apply filter logic
+  $("#applyFilterBtn")
+    .off("click")
+    .on("click", function () {
+      const dept = $("#filterDepartment").val().toLowerCase();
+      const loc = $("#filterLocation").val().toLowerCase();
+
+    //   console.log(dept, loc);
+
+      $("#personnelTableBody tr").each(function () {
+        const row = $(this);
+        const departmentCell = row.find("td").eq(2).text().toLowerCase();
+        console.log(departmentCell);
+
+        const locationCell = row.find("td").eq(3).text().toLowerCase();
+
+        const deptMatch = dept === "" || departmentCell.indexOf(dept) > -1;
+        const locMatch = loc === "" || locationCell.indexOf(loc) > -1;
+
+        row.toggle(deptMatch && locMatch);
+      });
+
+      $("#filterPersonnelModal").modal("hide");
+    });
 });
 
 $("#personnelBtn").click(function () {
@@ -32,188 +138,4 @@ $("#departmentsBtn").click(function () {
 
 $("#locationsBtn").click(function () {
   // Call function to refresh location table
-});
-
-$("#editPersonnelModal").on("show.bs.modal", function (e) {
-console.log(e.relatedTarget);
-  $.ajax({
-    url: "libs/php/getPersonnelByID.php",
-    type: "POST",
-    dataType: "json",
-    data: {
-      // Retrieve the data-id attribute from the calling button
-      // see https://getbootstrap.com/docs/5.0/components/modal/#varying-modal-content
-      // for the non-jQuery JavaScript alternative
-      id: $(e.relatedTarget).attr("data-id"),
-    },
-    success: function (result) {
-      console.log(result);
-      var resultCode = result.status.code;
-
-      if (resultCode == 200) {
-        // Update the hidden input with the employee id so that
-        // it can be referenced when the form is submitted
-
-        $("#editPersonnelEmployeeID").val(result.data.personnel[0].id);
-
-        $("#editPersonnelFirstName").val(result.data.personnel[0].firstName);
-        $("#editPersonnelLastName").val(result.data.personnel[0].lastName);
-        $("#editPersonnelJobTitle").val(result.data.personnel[0].jobTitle);
-        $("#editPersonnelEmailAddress").val(result.data.personnel[0].email);
-
-        $("#editPersonnelDepartment").html("");
-
-        // Populate the department select element with options
-        $.each(result.data.department, function () {
-          $("#editPersonnelDepartment").append(
-            $("<option>", {
-              value: this.id,
-              text: this.name,
-            })
-          );
-        });
-
-        $("#editPersonnelDepartment").val(
-          result.data.personnel[0].departmentID
-        );
-      } else {
-        $("#editPersonnelModal .modal-title").replaceWith(
-          "Error retrieving data"
-        );
-      }
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-      $("#editPersonnelModal .modal-title").replaceWith(
-        "Error retrieving data"
-      );
-    },
-  });
-});
-
-// Executes when the form button with type="submit" is clicked
-
-$("#editPersonnelForm").on("submit", function (e) {
-  // Executes when the form button with type="submit" is clicked
-  // stop the default browser behviour
-
-  e.preventDefault();
-
-  // AJAX call to save form data
-});
-
-// TESTING +++++++++++++++++++++++++
-
-// populate the Personnel table with data from the database
-$(document).ready(function () {
-  // Populate Personnel table
-  $.ajax({
-    url: "libs/php/getAllEmployees.php",
-    type: "POST",
-    dataType: "json",
-    data: {},
-    success: function (result) {
-      if (result.status.code === '200' && result.data && Array.isArray(result.data)) {
-        let rowsHtml = result.data
-          .map((person) => {
-            return `
-              <tr>
-                <td class="align-middle text-nowrap">${person.lastName}, ${person.firstName}</td>
-                <td class="align-middle text-nowrap d-none d-md-table-cell">
-                  ${person.jobTitle}
-                </td>
-                <td class="align-middle text-nowrap d-none d-md-table-cell">
-                  ${person.location}
-                </td>
-                <td class="align-middle text-nowrap d-none d-md-table-cell">
-                  ${person.email}
-                </td>
-                <td class="text-end text-nowrap">
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editPersonnelModal"
-                    data-id="${person.id}"
-                  >
-                    <i class="fa-solid fa-pencil fa-fw"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deletePersonnelModal"
-                    data-id="${person.id}"
-                  >
-                    <i class="fa-solid fa-trash fa-fw"></i>
-                  </button>
-                </td>
-              </tr>
-            `;
-          })
-          .join("");
-        $("#personnelTableBody").html(rowsHtml);
-      } else {
-        $("#personnelTableBody").html(
-          `<tr><td colspan="5" class="text-center text-danger">No personnel found.</td></tr>`
-        );
-      }
-    },
-    error: function () {
-      $("#personnelTableBody").html(
-        `<tr><td colspan="5" class="text-center text-danger">Error fetching personnel data</td></tr>`
-      );
-    },
-  });
-
-  // Populate Departments table
-  $.ajax({
-    url: "libs/php/getAllDepartments.php",
-    type: "POST",
-    dataType: "json",
-    data: {},
-    success: function (result) {
-      if (result.status.code === '200' && result.data && Array.isArray(result.data)) {
-        let rowsHtml = result.data
-          .map((dept) => {
-            return `
-              <tr>
-                <td class="align-middle text-nowrap">${dept.name}</td>
-                <td class="align-middle text-nowrap d-none d-md-table-cell">
-                  ${dept.location}
-                </td>
-                <td class="align-middle text-end text-nowrap">
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editDepartmentModal"
-                    data-id="${dept.id}"
-                  >
-                    <i class="fa-solid fa-pencil fa-fw"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-sm deleteDepartmentBtn"
-                    data-id="${dept.id}"
-                  >
-                    <i class="fa-solid fa-trash fa-fw"></i>
-                  </button>
-                </td>
-              </tr>
-            `;
-          })
-          .join("");
-        $("#departmentTableBody").html(rowsHtml);
-      } else {
-        $("#departmentTableBody").html(
-          `<tr><td colspan="3" class="text-center text-danger">No departments found.</td></tr>`
-        );
-      }
-    },
-    error: function () {
-      $("#departmentTableBody").html(
-        `<tr><td colspan="3" class="text-center text-danger">Error fetching department data</td></tr>`
-      );
-    },
-  });
 });
