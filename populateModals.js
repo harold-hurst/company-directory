@@ -11,7 +11,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
       id: $(e.relatedTarget).attr("data-id"),
     },
     success: function (result) {
-      console.log(result);
+
       var resultCode = result.status.code;
 
       if (resultCode == 200) {
@@ -47,6 +47,43 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       $("#editPersonnelModal .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    },
+  });
+});
+
+// Populate addPersonnelModal when shown
+$("#addPersonnelModal").on("show.bs.modal", function (e) {
+  $.ajax({
+    url: "libs/php/departments/getAllDepartments.php",
+    type: "POST",
+    dataType: "json",
+    data: {},
+    success: function (result) {
+console.log(result);
+      var resultCode = result.status.code;
+
+      if (resultCode == 200) {
+
+        $.each(result.data, function () {
+          $("#addPersonnelDepartment").append(
+            $("<option>", {
+              value: this.id,
+              text: this.name,
+            })
+          );
+        });
+
+
+      } else {
+        $("#addPersonnelModal .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#addPersonnelModal .modal-title").replaceWith(
         "Error retrieving data"
       );
     },

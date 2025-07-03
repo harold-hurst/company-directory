@@ -1,5 +1,7 @@
 // populate three tables on page load
 $(document).ready(function () {
+
+
   // Populate Personnel table
   $.ajax({
     url: "libs/php/employees/getAllEmployees.php",
@@ -64,7 +66,7 @@ $(document).ready(function () {
     },
     error: function () {
       $("#personnelTableBody").html(
-        `<tr><td colspan="5" class="text-center text-danger">Error fetching personnel data</td></tr>`
+        `<tr><td colspan="5" class="text-center text-danger">Error fetching employee data</td></tr>`
       );
     },
   });
@@ -139,7 +141,6 @@ $(document).ready(function () {
       ) {
         let rowsHtml = result.data
           .map((loc) => {
-
             return `
               <tr>
                 <td class="align-middle text-nowrap">${loc.name}</td>

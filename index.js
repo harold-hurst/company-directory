@@ -109,7 +109,7 @@ $("#filterBtn").click(function () {
       const dept = $("#filterDepartment").val().toLowerCase();
       const loc = $("#filterLocation").val().toLowerCase();
 
-    //   console.log(dept, loc);
+      //   console.log(dept, loc);
 
       $("#personnelTableBody tr").each(function () {
         const row = $(this);
@@ -129,13 +129,13 @@ $("#filterBtn").click(function () {
 });
 
 $("#personnelBtn").click(function () {
-  // Call function to refresh personnel table
+  $("#personnelTableBody").find("tr").show();
 });
 
 $("#departmentsBtn").click(function () {
-  // Call function to refresh department table
+    $("#departmentTableBody").find("tr").show();
 });
 
 $("#locationsBtn").click(function () {
-  // Call function to refresh location table
+  $("#locationTableBody").find("tr").show();
 });
