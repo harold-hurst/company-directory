@@ -8,11 +8,16 @@
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 
+header('Content-Type: application/json; charset=UTF-8');
+
 $executionStartTime = microtime(true);
 
-include("../config.php");
+// include("../config.php");
 
-header('Content-Type: application/json; charset=UTF-8');
+$cd_host = 'db5018146510.hosting-data.io';
+$cd_dbname = 'dbs14395212';
+$cd_user = 'dbu591079';
+$cd_password = 'Cdir_DB!x7Qz12$';
 
 $conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname);
 
