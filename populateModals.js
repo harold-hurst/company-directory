@@ -1,13 +1,10 @@
 // Populate editPersonnelModal when shown
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
   $.ajax({
-    url: "libs/php/employees/getEmployeeByID.php",
+    url: "libs/php/employees/getEmployee.php",
     type: "POST",
     dataType: "json",
     data: {
-      // Retrieve the data-id attribute from the calling button
-      // see https://getbootstrap.com/docs/5.0/components/modal/#varying-modal-content
-      // for the non-jQuery JavaScript alternative
       id: $(e.relatedTarget).attr("data-id"),
     },
     success: function (result) {
@@ -53,6 +50,74 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
   });
 });
 
+// Populate editDepartmentModal when shown
+$("#editDepartmentModal").on("show.bs.modal", function (e) {
+  $.ajax({
+    url: "libs/php/departments/getDepartment.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id: $(e.relatedTarget).attr("data-id"),
+    },
+    success: function (result) {
+      var resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        // Update the hidden input with the employee id so that
+        // it can be referenced when the form is submitted
+
+        $("#editDepartmentName").val(result.data[0].name);
+        $("#editDepartmentLocation").val(result.data[0].location);
+
+        // $("#editPersonnelDepartment").html("");
+
+        // $("#editPersonnelDepartment").val(
+        //   result.data.personnel[0].departmentID
+        // );
+      } else {
+        $("#editDepartmentModal .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#editDepartmentModal .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    },
+  });
+});
+
+// Populate editLocationModal when shown
+$("#editLocationModal").on("show.bs.modal", function (e) {
+  $.ajax({
+    url: "libs/php/locations/getLocation.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      id: $(e.relatedTarget).attr("data-id"),
+    },
+    success: function (result) {
+      var resultCode = result.status.code;
+
+      if (resultCode == 200) {
+        $("#editLocationName").val(result.data[0].name);
+      } else {
+        $("#editDepartmentModal .modal-title").replaceWith(
+          "Error retrieving data"
+        );
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#editDepartmentModal .modal-title").replaceWith(
+        "Error retrieving data"
+      );
+    },
+  });
+});
+
+// ==============================================================
+
 // Populate addPersonnelModal when shown
 $("#addPersonnelModal").on("show.bs.modal", function (e) {
   $.ajax({
@@ -90,84 +155,43 @@ console.log(result);
   });
 });
 
-// Executes when the form button with type="submit" is clicked
-$("#editPersonnelForm").on("submit", function (e) {
-  // Executes when the form button with type="submit" is clicked
-  // stop the default browser behviour
+// ===============================================================
 
-  e.preventDefault();
+// Populate deletePersonnelModal when shown
+$("#deletePersonnelModal").on("show.bs.modal", function (e) {
+  const employeeId = $(e.relatedTarget).attr("data-id");
 
-  // AJAX call to save form data
-});
+  // Set the employee ID in the modal
+  $("#deletePersonnelEmployeeID").val(employeeId);
 
-// Populate editDepartmentModal when shown
-$("#editDepartmentModal").on("show.bs.modal", function (e) {
+  // Fetch and display employee details
   $.ajax({
-    url: "libs/php/departments/getDepartmentByID.php",
+    url: "libs/php/employees/getEmployee.php",
     type: "POST",
     dataType: "json",
     data: {
-      // Retrieve the data-id attribute from the calling button
-      // see https://getbootstrap.com/docs/5.0/components/modal/#varying-modal-content
-      // for the non-jQuery JavaScript alternative
-      id: $(e.relatedTarget).attr("data-id"),
+      id: employeeId,
     },
     success: function (result) {
-      var resultCode = result.status.code;
-
-      if (resultCode == 200) {
-        // Update the hidden input with the employee id so that
-        // it can be referenced when the form is submitted
-
-        $("#editDepartmentName").val(result.data[0].name);
-        $("#editDepartmentLocation").val(result.data[0].location);
-
-        // $("#editPersonnelDepartment").html("");
-
-        // $("#editPersonnelDepartment").val(
-        //   result.data.personnel[0].departmentID
-        // );
+      if (result.status.code == 200) {
+        const emp = result.data.personnel[0];
+        $("#deletePersonnelName").text(`${emp.firstName} ${emp.lastName}`);
+        $("#deletePersonnelJobTitle").text(emp.jobTitle);
+        $("#deletePersonnelEmail").text(emp.email);
+        $("#deletePersonnelDepartment").text(emp.department);
       } else {
-        $("#editDepartmentModal .modal-title").replaceWith(
+        $("#deletePersonnelModal .modal-title").replaceWith(
           "Error retrieving data"
         );
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
-      $("#editDepartmentModal .modal-title").replaceWith(
+      $("#deletePersonnelModal .modal-title").replaceWith(
         "Error retrieving data"
       );
     },
   });
 });
 
-// Populate editLocationModal when shown
-$("#editLocationModal").on("show.bs.modal", function (e) {
-  $.ajax({
-    url: "libs/php/locations/getLocationByID.php",
-    type: "POST",
-    dataType: "json",
-    data: {
-      // Retrieve the data-id attribute from the calling button
-      // see https://getbootstrap.com/docs/5.0/components/modal/#varying-modal-content
-      // for the non-jQuery JavaScript alternative
-      id: $(e.relatedTarget).attr("data-id"),
-    },
-    success: function (result) {
-      var resultCode = result.status.code;
 
-      if (resultCode == 200) {
-        $("#editLocationName").val(result.data[0].name);
-      } else {
-        $("#editDepartmentModal .modal-title").replaceWith(
-          "Error retrieving data"
-        );
-      }
-    },
-    error: function (jqXHR, textStatus, errorThrown) {
-      $("#editDepartmentModal .modal-title").replaceWith(
-        "Error retrieving data"
-      );
-    },
-  });
-});
+

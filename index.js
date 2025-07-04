@@ -1,5 +1,19 @@
+// populate three tables on page load
+$(document).ready(function () {
+  // Populate Personnel table
+  refreshPersonnelTable();
+
+  // Populate Departments table
+  refreshDepartmentsTable();
+
+  // Populate Locations table
+  refreshLocationsTable();
+});
+
+// Handle search input change - toggle rows in appropriate table body
 $("#searchInp").on("keyup", function () {
-  const value = $(this).val().toLowerCase();
+  const searchTerm = $(this).val().toLowerCase();
+
   // Find the active table body
   let tableBody;
   if ($("#personnelBtn").hasClass("active")) {
@@ -10,9 +24,10 @@ $("#searchInp").on("keyup", function () {
     tableBody = $("#locationTableBody");
   }
 
+  // For each tr in the tale body, check if the text includes the search term
   tableBody.find("tr").each(function () {
     const rowText = $(this).text().toLowerCase();
-    $(this).toggle(rowText.indexOf(value) > -1);
+    $(this).toggle(rowText.indexOf(searchTerm) > -1);
   });
 });
 
@@ -109,12 +124,9 @@ $("#filterBtn").click(function () {
       const dept = $("#filterDepartment").val().toLowerCase();
       const loc = $("#filterLocation").val().toLowerCase();
 
-      //   console.log(dept, loc);
-
       $("#personnelTableBody tr").each(function () {
         const row = $(this);
         const departmentCell = row.find("td").eq(2).text().toLowerCase();
-        console.log(departmentCell);
 
         const locationCell = row.find("td").eq(3).text().toLowerCase();
 
@@ -133,7 +145,7 @@ $("#personnelBtn").click(function () {
 });
 
 $("#departmentsBtn").click(function () {
-    $("#departmentTableBody").find("tr").show();
+  $("#departmentTableBody").find("tr").show();
 });
 
 $("#locationsBtn").click(function () {

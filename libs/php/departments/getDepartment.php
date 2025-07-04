@@ -1,20 +1,14 @@
 <?php
 
-// example use from browser
-// http://localhost/companydirectory/libs/php/getDepartmentByID.php?id=<id>
-
-// remove next two lines for production	
-
-ini_set('display_errors', 'On');
-error_reporting(E_ALL);
+// ini_set('display_errors', 'On');
+// error_reporting(E_ALL);
 
 $executionStartTime = microtime(true);
 
-include("../config.php");
+require_once("../../../dbconfig.php");
+$conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname);
 
 header('Content-Type: application/json; charset=UTF-8');
-
-$conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname);
 
 if (mysqli_connect_errno()) {
 

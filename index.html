@@ -104,6 +104,16 @@
           tabindex="0"
         >
           <table class="table table-hover">
+            <tbody>
+              <tr>
+                <th>Name</th>
+                <th class="d-none d-md-table-cell">Job Title</th>
+                <th class="d-none d-md-table-cell">Department</th>
+                <th class="d-none d-md-table-cell">Location</th>
+                <th class="d-none d-md-table-cell">Email</th>
+                <th></th>
+              </tr>
+            </tbody>
             <tbody id="personnelTableBody">
               <!-- Table rows to be inserted on document load. -->
             </tbody>
@@ -118,6 +128,13 @@
           tabindex="0"
         >
           <table class="table table-hover">
+            <tbody>
+              <tr>
+                <th>Department</th>
+                <th class="d-none d-md-table-cell">Location</th>
+                <th></th>
+              </tr>
+            </tbody>
             <tbody id="departmentTableBody"></tbody>
           </table>
         </div>
@@ -130,6 +147,12 @@
           tabindex="0"
         >
           <table class="table table-hover">
+            <tbody>
+              <tr>
+                <th>Location</th>
+                <th></th>
+              </tr>
+            </tbody>
             <tbody id="locationTableBody"></tbody>
           </table>
         </div>
@@ -342,6 +365,74 @@
               class="btn btn-outline-primary btn-sm myBtn"
             >
               SAVE
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm myBtn"
+              data-bs-dismiss="modal"
+            >
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete personnel modal -->
+    <div
+      id="deletePersonnelModal"
+      class="modal fade"
+      tabindex="-1"
+      data-bs-backdrop="true"
+      data-bs-keyboard="false"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"
+      >
+        <div class="modal-content shadow">
+          <div class="modal-header bg-primary bg-gradient text-white">
+            <h5 class="modal-title">Delete Employee</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="deletePersonnelForm">
+              <!-- Employee overview will be populated here by JS -->
+              <p>
+                <strong>Name:</strong> <span id="deletePersonnelName"></span>
+              </p>
+              <p>
+                <strong>Job Title:</strong>
+                <span id="deletePersonnelJobTitle"></span>
+              </p>
+              <p>
+                <strong>Email:</strong> <span id="deletePersonnelEmail"></span>
+              </p>
+              <p>
+                <strong>Department:</strong>
+                <span id="deletePersonnelDepartment"></span>
+              </p>
+
+              <input type="hidden" id="deletePersonnelEmployeeID" />
+              <div class="alert alert-danger mt-3 mb-0" role="alert">
+                Are you sure you want to delete this employee?
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="submit"
+              form="deletePersonnelForm"
+              class="btn btn-danger btn-sm myBtn"
+              id="confirmDeletePersonnelBtn"
+            >
+              DELETE
             </button>
             <button
               type="button"
@@ -696,7 +787,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="index.js"></script>
-    <script src="populateTables.js"></script>
+    <script src="helperFunctions.js"></script>
     <script src="populateModals.js"></script>
+    <script src="formSubmission.js"></script>
   </body>
 </html>
