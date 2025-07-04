@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/favicon-16x16.png"
+    />
+    <link rel="manifest" href="assets/site.webmanifest" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Company Directory</title>
@@ -162,7 +181,7 @@
         class="border-top text-center fw-bold"
         style="border: 1px solid orange"
       >
-        <p class="fw-light my-3">Company Directory version 1.0</p>
+        <p class="fw-light my-3">Company Directory version 1.1</p>
       </footer>
     </section>
 
@@ -176,9 +195,6 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <!--   the last two classes centre the modal and, if the content is too long, ensures  -->
-      <!--   that the header and footer are always on display by making the body scroll -->
-
       <div
         class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"
       >
@@ -195,7 +211,7 @@
 
           <div class="modal-body">
             <form id="editPersonnelForm">
-              <input type="hidden" id="editPersonnelEmployeeID" />
+              <input type="hidden" id="editPersonnelID" />
 
               <div class="form-floating mb-3">
                 <input
@@ -282,9 +298,6 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <!--   the last two classes centre the modal and, if the content is too long, ensures  -->
-      <!--   that the header and footer are always on display by making the body scroll -->
-
       <div
         class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"
       >
@@ -446,6 +459,8 @@
       </div>
     </div>
 
+    <!-- *********************************************************************** -->
+
     <!-- Edit department modal -->
     <div
       id="editDepartmentModal"
@@ -464,7 +479,7 @@
       >
         <div class="modal-content shadow">
           <div class="modal-header bg-primary bg-gradient text-white">
-            <h5 class="modal-title">Edit department</h5>
+            <h5 class="modal-title">Edit Department</h5>
             <button
               type="button"
               class="btn-close btn-close-white"
@@ -475,7 +490,7 @@
 
           <div class="modal-body">
             <form id="editDepartmentForm">
-              <!-- <input type="hidden" id="editPersonnelEmployeeID" /> -->
+              <input type="hidden" id="editDepartmentID" />
 
               <div class="form-floating mb-3">
                 <input
@@ -489,13 +504,11 @@
               </div>
 
               <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
+                <select
+                  class="form-select"
                   id="editDepartmentLocation"
                   placeholder="Department location"
-                  required
-                />
+                ></select>
                 <label for="editDepartmentLocation">Department location</label>
               </div>
             </form>
@@ -504,7 +517,7 @@
           <div class="modal-footer">
             <button
               type="submit"
-              form="editPersonnelForm"
+              form="editDepartmentForm"
               class="btn btn-outline-primary btn-sm myBtn"
             >
               SAVE
@@ -595,6 +608,71 @@
         </div>
       </div>
     </div>
+
+    <!-- Delete department modal -->
+    <div
+      id="deleteDepartmentModal"
+      class="modal fade"
+      tabindex="-1"
+      data-bs-backdrop="true"
+      data-bs-keyboard="false"
+      aria-labelledby="deleteDepartmentModalLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"
+      >
+        <div class="modal-content shadow">
+          <div class="modal-header bg-primary bg-gradient text-white">
+            <h5 class="modal-title" id="deleteDepartmentModalLabel">
+              Delete Department
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="deleteDepartmentForm">
+              <!-- Department overview will be populated here by JS -->
+              <p>
+                <strong>Department:</strong>
+                <span id="deleteDepartmentName"></span>
+              </p>
+              <p>
+                <strong>Location:</strong>
+                <span id="deleteDepartmentLocation"></span>
+              </p>
+              <input type="hidden" id="deleteDepartmentID" />
+              <div class="alert alert-danger mt-3 mb-0" role="alert">
+                Are you sure you want to delete this department?
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="submit"
+              form="deleteDepartmentForm"
+              class="btn btn-danger btn-sm myBtn"
+              id="confirmDeleteDepartmentBtn"
+            >
+              DELETE
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm myBtn"
+              data-bs-dismiss="modal"
+            >
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- *********************************************************************** -->
 
     <!-- Edit location modal -->
     <div
@@ -724,6 +802,67 @@
       </div>
     </div>
 
+    <!-- Delete location modal -->
+    <div
+      id="deleteLocationModal"
+      class="modal fade"
+      tabindex="-1"
+      data-bs-backdrop="true"
+      data-bs-keyboard="false"
+      aria-labelledby="deleteLocationModalLabel"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"
+      >
+        <div class="modal-content shadow">
+          <div class="modal-header bg-primary bg-gradient text-white">
+            <h5 class="modal-title" id="deleteLocationModalLabel">
+              Delete Location
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="deleteLocationForm">
+              <!-- Location overview will be populated here by JS -->
+              <p>
+                <strong>Location:</strong>
+                <span id="deleteLocationName"></span>
+              </p>
+              <input type="hidden" id="deleteLocationID" />
+              <div class="alert alert-danger mt-3 mb-0" role="alert">
+                Are you sure you want to delete this Location?
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="submit"
+              form="deleteLocationForm"
+              class="btn btn-danger btn-sm myBtn"
+              id="confirmDeleteLocationBtn"
+            >
+              DELETE
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm myBtn"
+              data-bs-dismiss="modal"
+            >
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- *********************************************************************** -->
+
     <!-- Filter modal -->
     <div
       class="modal fade"
@@ -780,6 +919,8 @@
         </div>
       </div>
     </div>
+
+    <!-- *********************************************************************** -->
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

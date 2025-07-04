@@ -1,4 +1,4 @@
-// populate three tables on page load
+// Populate three tables on page load
 $(document).ready(function () {
   // Populate Personnel table
   refreshPersonnelTable();
@@ -38,6 +38,7 @@ $("#refreshBtn").click(function () {
   $("#searchInp").trigger("keyup");
 });
 
+// Open appropriate modal when the add button is clicked
 $("#addBtn").click(function () {
   if ($("#departmentsBtn").hasClass("active")) {
     // Open the add location modal

@@ -1,10 +1,5 @@
 <?php
 
-// example use from browser
-// http://localhost/companydirectory/libs/php/getAllDepartments.php
-
-// remove next two lines for production	
-
 // ini_set('display_errors', 'On');
 // error_reporting(E_ALL);
 
@@ -33,7 +28,7 @@ if (mysqli_connect_errno()) {
 
 // SQL does not accept parameters and so is not prepared
 
-$query = 'SELECT id, name FROM location';
+$query = 'SELECT id, name from location ORDER BY name';
 
 $result = $conn->query($query);
 
@@ -62,7 +57,7 @@ $output['status']['code'] = "200";
 $output['status']['name'] = "ok";
 $output['status']['description'] = "success";
 $output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-$output['data'] = $data;
+$output['data']['locations'] = $data;
 
 mysqli_close($conn);
 

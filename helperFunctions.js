@@ -57,14 +57,12 @@ function refreshPersonnelTable() {
         $("#personnelTableBody").html(rowsHtml);
       } else {
         $("#personnelTableBody").html(
-          personnelHeader +
             `<tr><td colspan="6" class="text-center text-danger">No personnel found.</td></tr>`
         );
       }
     },
     error: function () {
       $("#personnelTableBody").html(
-        personnelHeader +
           `<tr><td colspan="6" class="text-center text-danger">Error fetching employee data</td></tr>`
       );
     },
@@ -103,8 +101,10 @@ function refreshDepartmentsTable() {
                     </button>
                     <button
                       type="button"
-                      class="btn btn-primary btn-sm deleteDepartmentBtn"
+                      class="btn btn-primary btn-sm"
                       data-id="${dept.id}"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteDepartmentModal"
                     >
                       <i class="fa-solid fa-trash fa-fw"></i>
                     </button>
@@ -116,14 +116,12 @@ function refreshDepartmentsTable() {
         $("#departmentTableBody").html(rowsHtml);
       } else {
         $("#departmentTableBody").html(
-          departmentHeader +
             `<tr><td colspan="3" class="text-center text-danger">No departments found.</td></tr>`
         );
       }
     },
     error: function () {
       $("#departmentTableBody").html(
-        departmentHeader +
           `<tr><td colspan="3" class="text-center text-danger">Error fetching department data</td></tr>`
       );
     },
@@ -137,13 +135,15 @@ function refreshLocationsTable() {
     dataType: "json",
     data: {},
     success: function (result) {
+
+         console.log(result);
+
       if (
         result.status.code === "200" &&
         result.data &&
-        Array.isArray(result.data)
+        Array.isArray(result.data.locations)
       ) {
-        let rowsHtml = result.data
-          .map((loc) => {
+        let rowsHtml = result.data.locations.map((loc) => {
             return `
                 <tr>
                   <td class="align-middle text-nowrap">${loc.name}</td>
@@ -154,7 +154,12 @@ function refreshLocationsTable() {
                       data-id="${loc.id}">
                       <i class="fa-solid fa-pencil fa-fw"></i>
                     </button>
-                    <button type="button" class="btn btn-primary btn-sm">
+                    <button
+                        type="button"
+                        data-id="${loc.id}"
+                        class="btn btn-primary btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteLocationModal">
                       <i class="fa-solid fa-trash fa-fw"></i>
                     </button>
                   </td>
@@ -165,14 +170,12 @@ function refreshLocationsTable() {
         $("#locationTableBody").html(rowsHtml);
       } else {
         $("#locationTableBody").html(
-          locationHeader +
             `<tr><td colspan="2" class="text-center text-danger">No locations found.</td></tr>`
         );
       }
     },
     error: function () {
       $("#locationTableBody").html(
-        locationHeader +
           `<tr><td colspan="2" class="text-center text-danger">Error fetching location data</td></tr>`
       );
     },

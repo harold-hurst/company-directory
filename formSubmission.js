@@ -4,13 +4,15 @@ $("#editPersonnelForm").on("submit", function (e) {
 
   // Gather form data
   const formData = {
-    id: $("#editPersonnelEmployeeID").val(),
+    id: $("#editPersonnelID").val(),
     firstName: $("#editPersonnelFirstName").val(),
     lastName: $("#editPersonnelLastName").val(),
     jobTitle: $("#editPersonnelJobTitle").val(),
     email: $("#editPersonnelEmailAddress").val(),
     departmentID: $("#editPersonnelDepartment").val()
   };
+
+    console.log("Form Data:", formData);
 
   // AJAX call to update personnel
   $.ajax({
@@ -56,4 +58,131 @@ $("#deletePersonnelForm").on("submit", function (e) {
     }
   });
 });
+
+// Add personnel form submission handler
+$("#addPersonnelForm").on("submit", function (e) {
+  e.preventDefault();
+
+  // Gather form data
+  const formData = {
+    firstName: $("#addPersonnelFirstName").val(),
+    lastName: $("#addPersonnelLastName").val(),
+    jobTitle: $("#addPersonnelJobTitle").val(),
+    email: $("#addPersonnelEmailAddress").val(),
+    departmentID: $("#addPersonnelDepartment").val()
+  };
+
+  // AJAX call to add personnel
+  $.ajax({
+    url: "libs/php/employees/addEmployee.php",
+    type: "POST",
+    dataType: "json",
+    data: formData,
+    success: function (result) {
+      if (result.status.code == 200) {
+        $("#addPersonnelModal").modal("hide");
+        refreshPersonnelTable();
+      } else {
+        alert("Error adding employee: " + result.status.description);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    }
+  });
+});
+
+// ===============================================================
+
+// Edit department form submission handler
+$("#editDepartmentForm").on("submit", function (e) {
+  e.preventDefault();
+
+  const formData = {
+    id: $("#editDepartmentID").val(),
+    name: $("#editDepartmentName").val(),
+    location: $("#editDepartmentLocation").val()
+  };
+
+  console.log("Form Data:", formData);
+
+  $.ajax({
+    url: "libs/php/departments/updateDepartment.php",
+    type: "POST",
+    dataType: "json",
+    data: formData,
+    success: function (result) {
+      if (result.status.code == 200) {
+        $("#editDepartmentModal").modal("hide");
+        refreshDepartmentTable();
+      } else {
+        alert("Error updating department: " + result.status.description);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    }
+  });
+});
+
+// Delete department form submission handler
+$("#deleteDepartmentForm").on("submit", function (e) {
+  e.preventDefault();
+
+  const departmentId = $("#deleteDepartmentID").val();
+
+  $.ajax({
+    url: "libs/php/departments/deleteDepartment.php",
+    type: "POST",
+    dataType: "json",
+    data: { id: departmentId },
+    success: function (result) {
+      if (result.status.code == 200) {
+        $("#deleteDepartmentModal").modal("hide");
+        refreshDepartmentTable();
+      } else {
+        alert("Error deleting department: " + result.status.description);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    }
+  });
+});
+
+// Add department form submission handler
+$("#addDepartmentForm").on("submit", function (e) {
+  e.preventDefault();
+
+  const formData = {
+    name: $("#addDepartmentName").val(),
+    location: $("#addDepartmentLocation").val()
+  };
+
+  $.ajax({
+    url: "libs/php/departments/addDepartment.php",
+    type: "POST",
+    dataType: "json",
+    data: formData,
+    success: function (result) {
+      if (result.status.code == 200) {
+        $("#addDepartmentModal").modal("hide");
+        refreshDepartmentTable();
+      } else {
+        alert("Error adding department: " + result.status.description);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    }
+  });
+});
+
+// ===============================================================
+
+
+
+// ===============================================================
+
+
 
