@@ -12,8 +12,6 @@ $("#editPersonnelForm").on("submit", function (e) {
     departmentID: $("#editPersonnelDepartment").val()
   };
 
-    console.log("Form Data:", formData);
-
   // AJAX call to update personnel
   $.ajax({
     url: "libs/php/employees/updateEmployee.php",
@@ -101,10 +99,8 @@ $("#editDepartmentForm").on("submit", function (e) {
   const formData = {
     id: $("#editDepartmentID").val(),
     name: $("#editDepartmentName").val(),
-    location: $("#editDepartmentLocation").val()
+    locationID: $("#editDepartmentLocation").val()
   };
-
-  console.log("Form Data:", formData);
 
   $.ajax({
     url: "libs/php/departments/updateDepartment.php",
@@ -114,7 +110,7 @@ $("#editDepartmentForm").on("submit", function (e) {
     success: function (result) {
       if (result.status.code == 200) {
         $("#editDepartmentModal").modal("hide");
-        refreshDepartmentTable();
+        refreshDepartmentsTable();
       } else {
         alert("Error updating department: " + result.status.description);
       }
@@ -139,7 +135,7 @@ $("#deleteDepartmentForm").on("submit", function (e) {
     success: function (result) {
       if (result.status.code == 200) {
         $("#deleteDepartmentModal").modal("hide");
-        refreshDepartmentTable();
+        refreshDepartmentsTable();
       } else {
         alert("Error deleting department: " + result.status.description);
       }
@@ -156,8 +152,10 @@ $("#addDepartmentForm").on("submit", function (e) {
 
   const formData = {
     name: $("#addDepartmentName").val(),
-    location: $("#addDepartmentLocation").val()
+    locationID: $("#addDepartmentLocation").val()
   };
+
+  console.log("Form Data:", formData);
 
   $.ajax({
     url: "libs/php/departments/addDepartment.php",
@@ -167,7 +165,7 @@ $("#addDepartmentForm").on("submit", function (e) {
     success: function (result) {
       if (result.status.code == 200) {
         $("#addDepartmentModal").modal("hide");
-        refreshDepartmentTable();
+        refreshDepartmentsTable();
       } else {
         alert("Error adding department: " + result.status.description);
       }
@@ -180,7 +178,85 @@ $("#addDepartmentForm").on("submit", function (e) {
 
 // ===============================================================
 
+// Edit location form submission handler
+$("#editLocationForm").on("submit", function (e) {
+  e.preventDefault();
 
+  const formData = {
+    id: $("#editLocationID").val(),
+    name: $("#editLocationName").val(),
+  };
+
+  $.ajax({
+    url: "libs/php/locations/updateLocation.php",
+    type: "POST",
+    dataType: "json",
+    data: formData,
+    success: function (result) {
+      if (result.status.code == 200) {
+        $("#editLocationModal").modal("hide");
+        refreshLocationsTable();
+      } else {
+        alert("Error updating location: " + result.status.description);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    }
+  });
+});
+
+// Delete department form submission handler
+$("#deleteLocationForm").on("submit", function (e) {
+  e.preventDefault();
+
+  const locationId = $("#deleteLocationID").val();
+
+  $.ajax({
+    url: "libs/php/locations/deleteLocation.php",
+    type: "POST",
+    dataType: "json",
+    data: { id: locationId },
+    success: function (result) {
+      if (result.status.code == 200) {
+        $("#deleteLocationModal").modal("hide");
+        refreshLocationsTable();
+      } else {
+        alert("Error deleting location: " + result.status.description);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    }
+  });
+});
+
+// Add location form submission handler
+$("#addLocationForm").on("submit", function (e) {
+  e.preventDefault();
+
+  const formData = {
+    name: $("#addLocationName").val(),
+  };
+
+  $.ajax({
+    url: "libs/php/locations/addLocation.php",
+    type: "POST",
+    dataType: "json",
+    data: formData,
+    success: function (result) {
+      if (result.status.code == 200) {
+        $("#addLocationModal").modal("hide");
+        refreshLocationsTable();
+      } else {
+        alert("Error adding location: " + result.status.description);
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    }
+  });
+});
 
 // ===============================================================
 

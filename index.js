@@ -62,11 +62,12 @@ $("#filterBtn").click(function () {
     dataType: "json",
     data: {},
     success: function (result) {
+
       var resultCode = result.status.code;
 
       if (resultCode == 200) {
         // Populate the select with locations
-        $.each(result.data, function () {
+        $.each(result.data.locations, function () {
           $("#filterLocation").append(
             $("<option>", {
               value: this.name,
@@ -97,7 +98,7 @@ $("#filterBtn").click(function () {
 
       if (resultCode == 200) {
         // Populate the select with locations
-        $.each(result.data, function () {
+        $.each(result.data.departments, function () {
           $("#filterDepartment").append(
             $("<option>", {
               value: this.name,

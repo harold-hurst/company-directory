@@ -38,7 +38,7 @@
   </head>
   <body>
     <section class="p-3">
-      <div class="appHeader" style="border: 1px solid green">
+      <div class="appHeader">
         <div class="row">
           <div class="col">
             <input
@@ -113,7 +113,7 @@
       </div>
 
       <!-- Tab content -->
-      <div class="tab-content bg-white" style="border: 1px solid blue">
+      <div class="tab-content bg-white">
         <!-- Personnel tab content -->
         <div
           class="tab-pane show active"
@@ -179,7 +179,6 @@
 
       <footer
         class="border-top text-center fw-bold"
-        style="border: 1px solid orange"
       >
         <p class="fw-light my-3">Company Directory version 1.1</p>
       </footer>
@@ -314,7 +313,6 @@
 
           <div class="modal-body">
             <form id="addPersonnelForm">
-              <input type="hidden" id="addPersonnelEmployeeID" />
 
               <div class="form-floating mb-3">
                 <input
@@ -544,15 +542,12 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <!--   the last two classes centre the modal and, if the content is too long, ensures  -->
-      <!--   that the header and footer are always on display by making the body scroll -->
-
       <div
         class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"
       >
         <div class="modal-content shadow">
           <div class="modal-header bg-primary bg-gradient text-white">
-            <h5 class="modal-title">Add department</h5>
+            <h5 class="modal-title">Add Department</h5>
             <button
               type="button"
               class="btn-close btn-close-white"
@@ -562,29 +557,26 @@
           </div>
 
           <div class="modal-body">
-            <form id="editDepartmentForm">
-              <!-- <input type="hidden" id="editPersonnelEmployeeID" /> -->
+            <form id="addDepartmentForm">
 
               <div class="form-floating mb-3">
                 <input
                   type="text"
                   class="form-control"
-                  id="editDepartmentName"
+                  id="addDepartmentName"
                   placeholder="Department name"
                   required
                 />
-                <label for="editDepartmentName">Department name</label>
+                <label for="addDepartmentName">Department name</label>
               </div>
 
               <div class="form-floating mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="editDepartmentLocation"
+                <select
+                  class="form-select"
+                  id="addDepartmentLocation"
                   placeholder="Department location"
-                  required
-                />
-                <label for="editDepartmentLocation">Department location</label>
+                ></select>
+                <label for="addDepartmentLocation">Department location</label>
               </div>
             </form>
           </div>
@@ -592,7 +584,7 @@
           <div class="modal-footer">
             <button
               type="submit"
-              form="editPersonnelForm"
+              form="addDepartmentForm"
               class="btn btn-outline-primary btn-sm myBtn"
             >
               SAVE
@@ -703,7 +695,7 @@
 
           <div class="modal-body">
             <form id="editLocationForm">
-              <!-- <input type="hidden" id="editPersonnelEmployeeID" /> -->
+              <input type="hidden" id="editLocationID" />
 
               <div class="form-floating mb-3">
                 <input
@@ -721,7 +713,7 @@
           <div class="modal-footer">
             <button
               type="submit"
-              form="editPersonnelForm"
+              form="editLocationForm"
               class="btn btn-outline-primary btn-sm myBtn"
             >
               SAVE
@@ -748,9 +740,6 @@
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <!--   the last two classes centre the modal and, if the content is too long, ensures  -->
-      <!--   that the header and footer are always on display by making the body scroll -->
-
       <div
         class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable"
       >
@@ -766,18 +755,17 @@
           </div>
 
           <div class="modal-body">
-            <form id="editLocationForm">
-              <!-- <input type="hidden" id="editPersonnelEmployeeID" /> -->
+            <form id="addLocationForm">
 
               <div class="form-floating mb-3">
                 <input
                   type="text"
                   class="form-control"
-                  id="editLocationName"
+                  id="addLocationName"
                   placeholder="Location name"
                   required
                 />
-                <label for="editLocationName">Location name</label>
+                <label for="addLocationName">Location name</label>
               </div>
             </form>
           </div>
@@ -785,7 +773,7 @@
           <div class="modal-footer">
             <button
               type="submit"
-              form="editPersonnelForm"
+              form="addLocationForm"
               class="btn btn-outline-primary btn-sm myBtn"
             >
               SAVE

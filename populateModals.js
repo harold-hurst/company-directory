@@ -8,7 +8,6 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
       id: $(e.relatedTarget).attr("data-id"),
     },
     success: function (result) {
-
       var resultCode = result.status.code;
 
       if (resultCode == 200) {
@@ -24,11 +23,10 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
         $("#editPersonnelDepartment").html("");
 
         $.ajax({
-          url: "libs/php/departments/getAllDepartments2.php",
+          url: "libs/php/departments/getAllDepartments.php",
           type: "POST",
           dataType: "json",
           success: function (deptResult) {
-
             if (deptResult.status.code == 200) {
               // Populate the department select element with options
               $.each(deptResult.data.departments, function () {
@@ -91,24 +89,19 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
           type: "POST",
           dataType: "json",
           success: function (locResult) {
-
             if (locResult.status.code == 200) {
               // Populate the location select element with options
               $.each(locResult.data.locations, function () {
-
                 $("#editDepartmentLocation").append(
                   $("<option>", {
                     value: this.id,
                     text: this.name,
                   })
                 );
-
               });
 
               // Set the selected value to the employee's departmentID
-              $("#editDepartmentLocation").val(
-                result.data[0].locationID
-              );
+              $("#editDepartmentLocation").val(result.data[0].locationID);
             } else {
               $("#editDepartmentModal .modal-title").replaceWith(
                 "Error retrieving locations"
@@ -121,8 +114,6 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
             );
           },
         });
-
-
       } else {
         $("#editDepartmentModal .modal-title").replaceWith(
           "Error retrieving data"
@@ -150,6 +141,7 @@ $("#editLocationModal").on("show.bs.modal", function (e) {
       var resultCode = result.status.code;
 
       if (resultCode == 200) {
+        $("#editLocationID").val(result.data[0].id);
         $("#editLocationName").val(result.data[0].name);
       } else {
         $("#editDepartmentModal .modal-title").replaceWith(
@@ -178,7 +170,7 @@ $("#addPersonnelModal").on("show.bs.modal", function (e) {
       var resultCode = result.status.code;
 
       if (resultCode == 200) {
-        $.each(result.data, function () {
+        $.each(result.data.departments, function () {
           $("#addPersonnelDepartment").append(
             $("<option>", {
               value: this.id,
@@ -194,6 +186,38 @@ $("#addPersonnelModal").on("show.bs.modal", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       $("#addPersonnelModal .modal-title").replaceWith("Error retrieving data");
+    },
+  });
+});
+
+// Populate addDepartmentModal when shown
+$("#addDepartmentModal").on("show.bs.modal", function (e) {
+
+  $.ajax({
+    url: "libs/php/locations/getAllLocations.php",
+    type: "POST",
+    dataType: "json",
+    success: function (locResult) {
+      if (locResult.status.code == 200) {
+        // Populate the location select element with options
+        $.each(locResult.data.locations, function () {
+          $("#addDepartmentLocation").append(
+            $("<option>", {
+              value: this.id,
+              text: this.name,
+            })
+          );
+        });
+      } else {
+        $("#addDepartmentModal .modal-title").replaceWith(
+          "Error retrieving locations"
+        );
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $("#addDepartmentModal .modal-title").replaceWith(
+        "Error retrieving locations"
+      );
     },
   });
 });

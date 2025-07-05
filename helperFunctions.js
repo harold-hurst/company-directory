@@ -76,12 +76,13 @@ function refreshDepartmentsTable() {
     dataType: "json",
     data: {},
     success: function (result) {
+
       if (
         result.status.code === "200" &&
         result.data &&
-        Array.isArray(result.data)
+        Array.isArray(result.data.departments)
       ) {
-        let rowsHtml = result.data
+        let rowsHtml = result.data.departments
           .map((dept) => {
             return `
                 <tr>
@@ -135,8 +136,6 @@ function refreshLocationsTable() {
     dataType: "json",
     data: {},
     success: function (result) {
-
-         console.log(result);
 
       if (
         result.status.code === "200" &&
