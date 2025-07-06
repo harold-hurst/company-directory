@@ -192,7 +192,6 @@ $("#addPersonnelModal").on("show.bs.modal", function (e) {
 
 // Populate addDepartmentModal when shown
 $("#addDepartmentModal").on("show.bs.modal", function (e) {
-
   $.ajax({
     url: "libs/php/locations/getAllLocations.php",
     type: "POST",
@@ -266,6 +265,60 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
 $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
   const departmentId = $(e.relatedTarget).attr("data-id");
 
+  // Remove dependency/check alerts and enable the button if present
+  $("#deleteDepartmentModal .modal-body #departmentDependencies").remove();
+  $("#deleteDepartmentModal .modal-body #departmentCheck").remove();
+  $("#confirmDeleteDepartmentBtn").prop("disabled", false);
+
+  // First check if the department has any employees
+  $.ajax({
+    url: "libs/php/employees/getEmployeesByDepartment.php",
+    type: "POST",
+    dataType: "json",
+    data: { departmentID: departmentId },
+    success: function (result) {
+      console.log(result);
+      if (
+        result.status.code == 200 &&
+        result.data &&
+        result.data.personnel.length > 0
+      ) {
+        if (
+          $("#deleteDepartmentModal .modal-body #departmentDependencies")
+            .length === 0
+        ) {
+          // Build a list of employee names
+          let employeeList = "<ul class='my-2'>";
+          result.data.personnel.forEach(function (emp) {
+            employeeList += `<li><span class="fw-bold">${emp.firstName} ${emp.lastName}</span></li>`;
+          });
+          employeeList += "</ul>";
+
+          $("#deleteDepartmentModal .modal-body").append(
+            `<div id="departmentDependencies" class="alert alert-danger mt-3 mb-0" role="alert">
+              This department cannot be deleted because it has employees assigned:
+              ${employeeList}
+            </div>`
+          );
+          $("#confirmDeleteDepartmentBtn").prop("disabled", true);
+        }
+
+        return;
+      } else {
+        if (
+          $("#deleteDepartmentModal .modal-body #departmentCheck").length === 0
+        ) {
+          $("#deleteDepartmentModal .modal-body").append(
+            '<div id="departmentCheck" class="alert alert-danger mt-3 mb-0" role="alert">Are you sure you want to delete this department?</div>'
+          );
+        }
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    },
+  });
+
   // Set the department ID in the modal
   $("#deleteDepartmentID").val(departmentId);
 
@@ -299,6 +352,89 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
 // Populate deleteLocationModal when shown
 $("#deleteLocationModal").on("show.bs.modal", function (e) {
   const locationId = $(e.relatedTarget).attr("data-id");
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Remove dependency/check alerts and enable the button if present
+  $("#deleteLocationModal .modal-body #locationDependencies").remove();
+  $("#deleteLocationModal .modal-body #locationCheck").remove();
+  $("#confirmDeleteLocationBtn").prop("disabled", false);
+
+  // First check if the location has any departments
+  $.ajax({
+    url: "libs/php/departments/getDepartmentsByLocation.php",
+    type: "POST",
+    dataType: "json",
+    data: { locationID: locationId },
+    success: function (result) {
+      console.log(result);
+      if (
+        result.status.code == 200 &&
+        result.data &&
+        result.data.departments.length > 0
+      ) {
+        if (
+          $("#deleteLocationModal .modal-body #locationDependencies")
+            .length === 0
+        ) {
+          // Build a list of department names
+          let departmentList = "<ul class='my-2'>";
+          result.data.departments.forEach(function (dept) {
+            departmentList += `<li><span class="fw-bold">${dept.name}</span></li>`;
+          });
+          departmentList += "</ul>";
+
+
+
+
+          $("#deleteLocationModal .modal-body").append(
+            `<div id="locationDependencies" class="alert alert-danger mt-3 mb-0" role="alert">
+              This location cannot be deleted because it has departments assigned:
+              ${departmentList}
+            </div>`
+          );
+
+
+
+          $("#confirmDeleteLocationBtn").prop("disabled", true);
+        }
+
+        return;
+      } else {
+        if (
+          $("#deleteLocationModal .modal-body #locationCheck").length === 0
+        ) {
+          $("#deleteLocationModal .modal-body").append(
+            '<div id="locationCheck" class="alert alert-danger mt-3 mb-0" role="alert">Are you sure you want to delete this location?</div>'
+          );
+        }
+      }
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("AJAX error: " + textStatus);
+    },
+  });
+
+
+
+
+
+
+
+
+
+
+
 
   // Set the location ID in the modal
   $("#deleteLocationID").val(locationId);

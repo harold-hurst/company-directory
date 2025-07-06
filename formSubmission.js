@@ -127,17 +127,38 @@ $("#deleteDepartmentForm").on("submit", function (e) {
 
   const departmentId = $("#deleteDepartmentID").val();
 
+  // First check if the department has any employees
   $.ajax({
-    url: "libs/php/departments/deleteDepartment.php",
+    url: "libs/php/employees/getEmployeesByDepartment.php",
     type: "POST",
     dataType: "json",
-    data: { id: departmentId },
+    data: { departmentID: departmentId },
     success: function (result) {
-      if (result.status.code == 200) {
-        $("#deleteDepartmentModal").modal("hide");
-        refreshDepartmentsTable();
+      if (result.status.code == 200 && result.data && result.data.personnel.length > 0) {
+
+        alert("Cannot delete department: There are employees assigned to this department.");
+
+        return;
       } else {
-        alert("Error deleting department: " + result.status.description);
+        // Proceed with delete if no employees found
+        $.ajax({
+          url: "libs/php/departments/deleteDepartment.php",
+          type: "POST",
+          dataType: "json",
+          data: { id: departmentId },
+          success: function (result) {
+            if (result.status.code == 200) {
+              $("#deleteDepartmentModal").modal("hide");
+              refreshDepartmentsTable();
+            } else {
+              alert("Error deleting department: " + result.status.description);
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert("AJAX error: " + textStatus);
+          }
+        });
+
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -206,23 +227,43 @@ $("#editLocationForm").on("submit", function (e) {
   });
 });
 
-// Delete department form submission handler
+// Delete location form submission handler
 $("#deleteLocationForm").on("submit", function (e) {
   e.preventDefault();
 
   const locationId = $("#deleteLocationID").val();
-
+    // First check if the location has any departments
   $.ajax({
-    url: "libs/php/locations/deleteLocation.php",
+    url: "libs/php/departments/getDepartmentsByLocation.php",
     type: "POST",
     dataType: "json",
-    data: { id: locationId },
+    data: { locationID: locationId },
     success: function (result) {
-      if (result.status.code == 200) {
-        $("#deleteLocationModal").modal("hide");
-        refreshLocationsTable();
+
+        console.log(result);
+
+      if (result.status.code == 200 && result.data && result.data.departments && result.data.departments.length > 0) {
+        alert("Cannot delete location: There are departments assigned to this location.");
+        return;
       } else {
-        alert("Error deleting location: " + result.status.description);
+        // Proceed with delete if no departments found
+        $.ajax({
+          url: "libs/php/locations/deleteLocation.php",
+          type: "POST",
+          dataType: "json",
+          data: { id: locationId },
+          success: function (result) {
+            if (result.status.code == 200) {
+              $("#deleteLocationModal").modal("hide");
+              refreshLocationsTable();
+            } else {
+              alert("Error deleting location: " + result.status.description);
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert("AJAX error: " + textStatus);
+          }
+        });
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
