@@ -180,3 +180,9 @@ function refreshLocationsTable() {
     },
   });
 }
+
+function activatePersonnelTab() {
+  const personnelTabBtn = document.getElementById('personnelBtn');
+  const tab = new bootstrap.Tab(personnelTabBtn);
+  tab.show();
+}
