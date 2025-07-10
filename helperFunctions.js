@@ -17,9 +17,6 @@ function refreshPersonnelTable() {
                 <tr>
                   <td class="align-middle text-nowrap">${person.lastName}, ${person.firstName}</td>
                   <td class="align-middle text-nowrap d-none d-md-table-cell">
-                    ${person.jobTitle}
-                  </td>
-                  <td class="align-middle text-nowrap d-none d-md-table-cell">
                     ${person.department}
                   </td>
                   <td class="align-middle text-nowrap d-none d-md-table-cell">
@@ -57,13 +54,13 @@ function refreshPersonnelTable() {
         $("#personnelTableBody").html(rowsHtml);
       } else {
         $("#personnelTableBody").html(
-            `<tr><td colspan="6" class="text-center text-danger">No personnel found.</td></tr>`
+          `<tr><td colspan="6" class="text-center text-danger">No personnel found.</td></tr>`
         );
       }
     },
     error: function () {
       $("#personnelTableBody").html(
-          `<tr><td colspan="6" class="text-center text-danger">Error fetching employee data</td></tr>`
+        `<tr><td colspan="6" class="text-center text-danger">Error fetching employee data</td></tr>`
       );
     },
   });
@@ -76,7 +73,6 @@ function refreshDepartmentsTable() {
     dataType: "json",
     data: {},
     success: function (result) {
-
       if (
         result.status.code === "200" &&
         result.data &&
@@ -117,13 +113,13 @@ function refreshDepartmentsTable() {
         $("#departmentTableBody").html(rowsHtml);
       } else {
         $("#departmentTableBody").html(
-            `<tr><td colspan="3" class="text-center text-danger">No departments found.</td></tr>`
+          `<tr><td colspan="3" class="text-center text-danger">No departments found.</td></tr>`
         );
       }
     },
     error: function () {
       $("#departmentTableBody").html(
-          `<tr><td colspan="3" class="text-center text-danger">Error fetching department data</td></tr>`
+        `<tr><td colspan="3" class="text-center text-danger">Error fetching department data</td></tr>`
       );
     },
   });
@@ -136,13 +132,13 @@ function refreshLocationsTable() {
     dataType: "json",
     data: {},
     success: function (result) {
-
       if (
         result.status.code === "200" &&
         result.data &&
         Array.isArray(result.data.locations)
       ) {
-        let rowsHtml = result.data.locations.map((loc) => {
+        let rowsHtml = result.data.locations
+          .map((loc) => {
             return `
                 <tr>
                   <td class="align-middle text-nowrap">${loc.name}</td>
@@ -169,20 +165,25 @@ function refreshLocationsTable() {
         $("#locationTableBody").html(rowsHtml);
       } else {
         $("#locationTableBody").html(
-            `<tr><td colspan="2" class="text-center text-danger">No locations found.</td></tr>`
+          `<tr><td colspan="2" class="text-center text-danger">No locations found.</td></tr>`
         );
       }
     },
     error: function () {
       $("#locationTableBody").html(
-          `<tr><td colspan="2" class="text-center text-danger">Error fetching location data</td></tr>`
+        `<tr><td colspan="2" class="text-center text-danger">Error fetching location data</td></tr>`
       );
     },
   });
 }
 
 function activatePersonnelTab() {
-  const personnelTabBtn = document.getElementById('personnelBtn');
+  const personnelTabBtn = document.getElementById("personnelBtn");
   const tab = new bootstrap.Tab(personnelTabBtn);
   tab.show();
+
+  // enable filter button if not already enabled
+  if ($("#filterBtn").prop("disabled")) {
+    $("#filterBtn").prop("disabled", false);
+  }
 }

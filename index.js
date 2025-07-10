@@ -34,8 +34,23 @@ $("#searchInp").on("keyup", function () {
 $("#refreshBtn").click(function () {
   // Clear the search input
   $("#searchInp").val("");
-  // Programmatically trigger a change (keyup) event on the input
-  $("#searchInp").trigger("keyup");
+  // Refresh the all tables
+  refreshPersonnelTable();
+  refreshDepartmentsTable();
+  refreshLocationsTable();
+  activatePersonnelTab();
+
+  // enable filter button if not already enabled
+  if ($("#filterBtn").prop("disabled")) {
+    $("#filterBtn").prop("disabled", false);
+  }
+
+  // remove the btn-danger class from filterBtn if present
+  $("#filterBtn").removeClass("btn-danger");
+
+  $("#filterLocation").val("All");
+  $("#filterDepartment").val("All");
+
 });
 
 // Open appropriate modal when the add button is clicked
@@ -67,28 +82,26 @@ $("#filterBtn").click(function () {
 
       if (resultCode == 200) {
         // Before populating #filterDepartment, add a default option
-        $("#filterDepartment")
-          .empty()
-          .append(
-            $("<option>", {
-              value: "",
-              text: "Select Department",
-            })
-          );
+        if ($("#filterDepartment").children().length === 0) {
+          $("#filterDepartment")
+            .empty()
+            .append(
+              $("<option>", {
+                value: "All",
+                text: "All",
+              })
+            );
 
-        // Populate the select with locations
-        $.each(result.data.departments, function () {
-          $("#filterDepartment").append(
-            $("<option>", {
-              value: this.name,
-              text: this.name,
-            })
-          );
-        });
-      } else {
-        $("#filterDepartmentModalLabel .modal-title").replaceWith(
-          "Error retrieving data"
-        );
+          // Populate the select with departments
+          $.each(result.data.departments, function () {
+            $("#filterDepartment").append(
+              $("<option>", {
+                value: this.name,
+                text: this.name,
+              })
+            );
+          });
+        }
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -108,28 +121,26 @@ $("#filterBtn").click(function () {
 
       if (resultCode == 200) {
         // Before populating #filterLocation, add a default option
-        $("#filterLocation")
-          .empty()
-          .append(
-            $("<option>", {
-              value: "",
-              text: "Select Location",
-            })
-          );
+        if ($("#filterLocation").children().length === 0) {
+          $("#filterLocation")
+            .empty()
+            .append(
+              $("<option>", {
+                value: "All",
+                text: "All",
+              })
+            );
 
-        // Populate the select with locations
-        $.each(result.data.locations, function () {
-          $("#filterLocation").append(
-            $("<option>", {
-              value: this.name,
-              text: this.name,
-            })
-          );
-        });
-      } else {
-        $("#filterPersonnelModalLabel .modal-title").replaceWith(
-          "Error retrieving data"
-        );
+          // Populate the select with locations
+          $.each(result.data.locations, function () {
+            $("#filterLocation").append(
+              $("<option>", {
+                value: this.name,
+                text: this.name,
+              })
+            );
+          });
+        }
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -140,41 +151,64 @@ $("#filterBtn").click(function () {
   });
 });
 
-// Apply filter logic
-$("#applyFilterBtn")
-  .off("click")
-  .on("click", function () {
-    const dept = $("#filterDepartment").val().toLowerCase();
-    const loc = $("#filterLocation").val().toLowerCase();
+$("#filterDepartment").change(function () {
+  $("#filterLocation").val("All");
 
-    $("#personnelTableBody tr").each(function () {
-      const row = $(this);
-      const departmentCell = row.find("td").eq(2).text().toLowerCase();
+  const dept = $("#filterDepartment").val().toLowerCase();
 
-      const locationCell = row.find("td").eq(3).text().toLowerCase();
+  $("#personnelTableBody tr").each(function () {
+    const row = $(this);
+    const departmentCell = row.find("td").eq(1).text().toLowerCase();
 
-      // dept and/or loc can be "" and still match all rows
-      const deptMatch = dept === "" || departmentCell.indexOf(dept) > -1;
-      const locMatch = loc === "" || locationCell.indexOf(loc) > -1;
+    const deptMatch = departmentCell.indexOf(dept) > -1;
 
-      row.toggle(deptMatch && locMatch);
-    });
-
-    $("#filterPersonnelModal").modal("hide");
-    // $("#personnelTableBody").find("tr").show();
+    row.toggle(deptMatch);
   });
+
+  // add a colour to filter button when a filter is applied
+  $("#filterBtn").addClass("btn-danger");
+});
+
+$("#filterLocation").change(function () {
+  $("#filterDepartment").val("All");
+
+  const loc = $("#filterLocation").val().toLowerCase();
+
+  $("#personnelTableBody tr").each(function () {
+    const row = $(this);
+    const locationCell = row.find("td").eq(2).text().toLowerCase();
+
+    const locMatch = locationCell.indexOf(loc) > -1;
+
+    row.toggle(locMatch);
+  });
+  // add a colour to filter button when a filter is applied
+  $("#filterBtn").addClass("btn-danger");
+});
 
 // Show all rows in the personnel table when the personnel button is clicked
 $("#personnelBtn").click(function () {
   $("#personnelTableBody").find("tr").show();
+  // enable filter button if not already enabled
+  if ($("#filterBtn").prop("disabled")) {
+    $("#filterBtn").prop("disabled", false);
+  }
 });
 
 // Show all rows in the departments and locations tables when their respective buttons are clicked
 $("#departmentsBtn").click(function () {
   $("#departmentTableBody").find("tr").show();
+  // disable filter button if not already disabled
+  if (!$("#filterBtn").prop("disabled")) {
+    $("#filterBtn").prop("disabled", true);
+  }
 });
 
 // Show all rows in the locations table when the locations button is clicked
 $("#locationsBtn").click(function () {
   $("#locationTableBody").find("tr").show();
+  // disable filter button if not already disabled
+  if (!$("#filterBtn").prop("disabled")) {
+    $("#filterBtn").prop("disabled", true);
+  }
 });

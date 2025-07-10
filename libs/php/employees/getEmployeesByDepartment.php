@@ -25,13 +25,19 @@ if (mysqli_connect_errno()) {
 	exit;
 }
 
-$query = $conn->prepare('SELECT *
+$query = $conn->prepare('SELECT d.name AS departmentName, COUNT(p.id) AS personnelCount
 FROM 
-    personnel
+	department d LEFT JOIN
+    personnel p ON (p.departmentID = d.id)
 WHERE 
     departmentID = ?');
 
 $query->bind_param("i", $_REQUEST['departmentID']);
+
+
+
+
+
 
 $query->execute();
 

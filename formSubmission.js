@@ -9,7 +9,7 @@ $("#editPersonnelForm").on("submit", function (e) {
     lastName: $("#editPersonnelLastName").val(),
     jobTitle: $("#editPersonnelJobTitle").val(),
     email: $("#editPersonnelEmailAddress").val(),
-    departmentID: $("#editPersonnelDepartment").val()
+    departmentID: $("#editPersonnelDepartment").val(),
   };
 
   // AJAX call to update personnel
@@ -28,7 +28,7 @@ $("#editPersonnelForm").on("submit", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -53,7 +53,7 @@ $("#deletePersonnelForm").on("submit", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -67,7 +67,7 @@ $("#addPersonnelForm").on("submit", function (e) {
     lastName: $("#addPersonnelLastName").val(),
     jobTitle: $("#addPersonnelJobTitle").val(),
     email: $("#addPersonnelEmailAddress").val(),
-    departmentID: $("#addPersonnelDepartment").val()
+    departmentID: $("#addPersonnelDepartment").val(),
   };
 
   // AJAX call to add personnel
@@ -86,7 +86,7 @@ $("#addPersonnelForm").on("submit", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -99,7 +99,7 @@ $("#editDepartmentForm").on("submit", function (e) {
   const formData = {
     id: $("#editDepartmentID").val(),
     name: $("#editDepartmentName").val(),
-    locationID: $("#editDepartmentLocation").val()
+    locationID: $("#editDepartmentLocation").val(),
   };
 
   $.ajax({
@@ -117,7 +117,7 @@ $("#editDepartmentForm").on("submit", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -134,9 +134,14 @@ $("#deleteDepartmentForm").on("submit", function (e) {
     dataType: "json",
     data: { departmentID: departmentId },
     success: function (result) {
-      if (result.status.code == 200 && result.data && result.data.personnel.length > 0) {
-
-        alert("Cannot delete department: There are employees assigned to this department.");
+      if (
+        result.status.code == 200 &&
+        result.data &&
+        result.data.personnel[0]["personnelCount"] > 0
+      ) {
+        alert(
+          "Cannot delete department: There are employees assigned to this department."
+        );
 
         return;
       } else {
@@ -156,14 +161,13 @@ $("#deleteDepartmentForm").on("submit", function (e) {
           },
           error: function (jqXHR, textStatus, errorThrown) {
             alert("AJAX error: " + textStatus);
-          }
+          },
         });
-
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -173,10 +177,8 @@ $("#addDepartmentForm").on("submit", function (e) {
 
   const formData = {
     name: $("#addDepartmentName").val(),
-    locationID: $("#addDepartmentLocation").val()
+    locationID: $("#addDepartmentLocation").val(),
   };
-
-  console.log("Form Data:", formData);
 
   $.ajax({
     url: "libs/php/departments/addDepartment.php",
@@ -193,7 +195,7 @@ $("#addDepartmentForm").on("submit", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -223,7 +225,7 @@ $("#editLocationForm").on("submit", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -232,7 +234,7 @@ $("#deleteLocationForm").on("submit", function (e) {
   e.preventDefault();
 
   const locationId = $("#deleteLocationID").val();
-    // First check if the location has any departments
+  // First check if the location has any departments
   $.ajax({
     url: "libs/php/departments/getDepartmentsByLocation.php",
     type: "POST",
@@ -240,10 +242,14 @@ $("#deleteLocationForm").on("submit", function (e) {
     data: { locationID: locationId },
     success: function (result) {
 
-        console.log(result);
-
-      if (result.status.code == 200 && result.data && result.data.departments && result.data.departments.length > 0) {
-        alert("Cannot delete location: There are departments assigned to this location.");
+      if (
+        result.status.code == 200 &&
+        result.data &&
+        result.data.departments[0]["departmentCount"] > 0
+      ) {
+        alert(
+          "Cannot delete location: There are departments assigned to this location."
+        );
         return;
       } else {
         // Proceed with delete if no departments found
@@ -262,13 +268,13 @@ $("#deleteLocationForm").on("submit", function (e) {
           },
           error: function (jqXHR, textStatus, errorThrown) {
             alert("AJAX error: " + textStatus);
-          }
+          },
         });
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
@@ -295,11 +301,8 @@ $("#addLocationForm").on("submit", function (e) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
-    }
+    },
   });
 });
 
 // ===============================================================
-
-
-
