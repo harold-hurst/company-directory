@@ -1,7 +1,7 @@
 // Populate editPersonnelModal when shown
 $("#editPersonnelModal").on("show.bs.modal", function (e) {
   $.ajax({
-    url: "libs/php/employees/getEmployee.php",
+    url: "libs/php/database/getEmployee.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -23,7 +23,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
         $("#editPersonnelDepartment").html("");
 
         $.ajax({
-          url: "libs/php/departments/getAllDepartments.php",
+          url: "libs/php/database/getAllDepartments.php",
           type: "POST",
           dataType: "json",
           success: function (deptResult) {
@@ -71,7 +71,7 @@ $("#editPersonnelModal").on("show.bs.modal", function (e) {
 // Populate editDepartmentModal when shown
 $("#editDepartmentModal").on("show.bs.modal", function (e) {
   $.ajax({
-    url: "libs/php/departments/getDepartment.php",
+    url: "libs/php/database/getDepartment.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -85,7 +85,7 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
         $("#editDepartmentName").val(result.data[0].name);
 
         $.ajax({
-          url: "libs/php/locations/getAllLocations.php",
+          url: "libs/php/database/getAllLocations.php",
           type: "POST",
           dataType: "json",
           success: function (locResult) {
@@ -131,7 +131,7 @@ $("#editDepartmentModal").on("show.bs.modal", function (e) {
 // Populate editLocationModal when shown
 $("#editLocationModal").on("show.bs.modal", function (e) {
   $.ajax({
-    url: "libs/php/locations/getLocation.php",
+    url: "libs/php/database/getLocation.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -162,7 +162,7 @@ $("#editLocationModal").on("show.bs.modal", function (e) {
 // Populate addPersonnelModal when shown
 $("#addPersonnelModal").on("show.bs.modal", function (e) {
   $.ajax({
-    url: "libs/php/departments/getAllDepartments.php",
+    url: "libs/php/database/getAllDepartments.php",
     type: "POST",
     dataType: "json",
     data: {},
@@ -193,7 +193,7 @@ $("#addPersonnelModal").on("show.bs.modal", function (e) {
 // Populate addDepartmentModal when shown
 $("#addDepartmentModal").on("show.bs.modal", function (e) {
   $.ajax({
-    url: "libs/php/locations/getAllLocations.php",
+    url: "libs/php/database/getAllLocations.php",
     type: "POST",
     dataType: "json",
     success: function (locResult) {
@@ -232,15 +232,13 @@ $("#deletePersonnelModal").on("show.bs.modal", function (e) {
 
   // Fetch and display employee details
   $.ajax({
-    url: "libs/php/employees/getEmployee.php",
+    url: "libs/php/database/getEmployee.php",
     type: "POST",
     dataType: "json",
     data: {
       id: employeeId,
     },
     success: function (result) {
-      console.log(result);
-
       if (result.status.code == 200) {
         const emp = result.data.personnel[0];
         $("#deletePersonnelName").text(`${emp.firstName} ${emp.lastName}`);
@@ -275,7 +273,7 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
 
   // First check if the department has any employees
   $.ajax({
-    url: "libs/php/employees/getEmployeesByDepartment.php",
+    url: "libs/php/database/getEmployeesByDepartment.php",
     type: "POST",
     dataType: "json",
     data: { departmentID: departmentId },
@@ -323,7 +321,7 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
 
   // Fetch and display department details
   $.ajax({
-    url: "libs/php/departments/getDepartment.php",
+    url: "libs/php/database/getDepartment.php",
     type: "POST",
     dataType: "json",
     data: {
@@ -362,21 +360,16 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
 
   // First check if the location has any departments
   $.ajax({
-    url: "libs/php/departments/getDepartmentsByLocation.php",
+    url: "libs/php/database/getDepartmentsByLocation.php",
     type: "POST",
     dataType: "json",
     data: { locationID: locationId },
     success: function (result) {
-
       if (
         result.status.code == 200 &&
         result.data &&
         result.data.departments[0]["departmentCount"] > 0
       ) {
-
-
-
-
         let departmentCount = result.data.departments[0]["departmentCount"];
         let locationName = result.data.departments[0]["locationName"];
 
@@ -391,13 +384,8 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
 
         $("#confirmDeleteLocationBtn").prop("disabled", true);
 
-
-
-
-
         return;
       } else {
-
         let locationName = result.data.departments[0]["locationName"];
         if (
           $("#deleteLocationModal .modal-body #confirmDeleteLocationMessage")
@@ -408,10 +396,6 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
           );
         }
       }
-
-
-
-    
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert("AJAX error: " + textStatus);
@@ -420,7 +404,7 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
 
   // Fetch and display location details
   $.ajax({
-    url: "libs/php/locations/getLocation.php",
+    url: "libs/php/database/getLocation.php",
     type: "POST",
     dataType: "json",
     data: {

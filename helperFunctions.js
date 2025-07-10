@@ -1,7 +1,7 @@
 // Helper functions to refresh tables
 function refreshPersonnelTable() {
   $.ajax({
-    url: "libs/php/employees/getAllEmployees.php",
+    url: "libs/php/database/getAllEmployees.php",
     type: "POST",
     dataType: "json",
     data: {},
@@ -11,47 +11,75 @@ function refreshPersonnelTable() {
         result.data &&
         Array.isArray(result.data)
       ) {
-        let rowsHtml = result.data
-          .map((person) => {
-            return `
-                <tr>
-                  <td class="align-middle text-nowrap">${person.lastName}, ${person.firstName}</td>
-                  <td class="align-middle text-nowrap d-none d-md-table-cell">
-                    ${person.department}
-                  </td>
-                  <td class="align-middle text-nowrap d-none d-md-table-cell">
-                    ${person.location}
-                  </td>
-                  <td class="align-middle text-nowrap d-none d-md-table-cell">
-                    ${person.email}
-                  </td>
-                  <td class="text-end text-nowrap">
+        var frag = document.createDocumentFragment();
 
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      data-bs-toggle="modal"
-                      data-bs-target="#editPersonnelModal"
-                      data-id="${person.id}"
-                    >
-                      <i class="fa-solid fa-pencil fa-fw"></i>
-                    </button>
+        result.data.forEach(function (item, index) {
+          var row = document.createElement("tr");
 
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deletePersonnelModal"
-                      data-id="${person.id}"
-                    >
-                      <i class="fa-solid fa-trash fa-fw"></i>
-                    </button>
-                  </td>
-                </tr>
-              `;
-          })
-          .join("");
-        $("#personnelTableBody").html(rowsHtml);
+          var name = document.createElement("td");
+          var nameText = document.createTextNode(
+            item.lastName + ", " + item.firstName
+          );
+          name.append(nameText);
+
+          row.append(name);
+
+          var dept = document.createElement("td");
+          var deptText = document.createTextNode(item.department);
+          dept.append(deptText);
+
+          row.append(dept);
+
+          var loc = document.createElement("td");
+          var locText = document.createTextNode(item.location);
+          loc.append(locText);
+
+          row.append(loc);
+
+          var email = document.createElement("td");
+          var emailText = document.createTextNode(item.email);
+          email.append(emailText);
+
+          row.append(email);
+
+          var actionTd = document.createElement("td");
+          actionTd.className = "text-end";
+
+          // --- Edit Button ---
+          var editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "btn btn-primary btn-sm me-1";
+          editButton.setAttribute("data-bs-toggle", "modal");
+          editButton.setAttribute("data-bs-target", "#editPersonnelModal");
+          editButton.setAttribute("data-id", item.id);
+
+          var editIcon = document.createElement("i");
+          editIcon.className = "fa-solid fa-pencil fa-fw";
+          editButton.appendChild(editIcon);
+
+          // --- Delete Button ---
+          var deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "btn btn-primary btn-sm";
+          deleteButton.setAttribute("data-bs-toggle", "modal");
+          deleteButton.setAttribute("data-bs-target", "#deletePersonnelModal");
+          deleteButton.setAttribute("data-id", item.id);
+
+          var deleteIcon = document.createElement("i");
+          deleteIcon.className = "fa-solid fa-trash fa-fw";
+          deleteButton.appendChild(deleteIcon);
+
+          // Append buttons to the <td>
+          actionTd.appendChild(editButton);
+          actionTd.appendChild(deleteButton);
+
+          // Append the <td> to the row
+          row.appendChild(actionTd);
+
+          frag.append(row);
+        });
+
+        document.getElementById("personnelTableBody").append(frag);
       } else {
         $("#personnelTableBody").html(
           `<tr><td colspan="6" class="text-center text-danger">No personnel found.</td></tr>`
@@ -68,7 +96,7 @@ function refreshPersonnelTable() {
 
 function refreshDepartmentsTable() {
   $.ajax({
-    url: "libs/php/departments/getAllDepartments.php",
+    url: "libs/php/database/getAllDepartments.php",
     type: "POST",
     dataType: "json",
     data: {},
@@ -78,39 +106,59 @@ function refreshDepartmentsTable() {
         result.data &&
         Array.isArray(result.data.departments)
       ) {
-        let rowsHtml = result.data.departments
-          .map((dept) => {
-            return `
-                <tr>
-                  <td class="align-middle text-nowrap">${dept.name}</td>
-                  <td class="align-middle text-nowrap d-none d-md-table-cell">
-                    ${dept.location}
-                  </td>
-                  <td class="align-middle text-end text-nowrap">
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      data-bs-toggle="modal"
-                      data-bs-target="#editDepartmentModal"
-                      data-id="${dept.id}"
-                    >
-                      <i class="fa-solid fa-pencil fa-fw"></i>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      data-id="${dept.id}"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteDepartmentModal"
-                    >
-                      <i class="fa-solid fa-trash fa-fw"></i>
-                    </button>
-                  </td>
-                </tr>
-              `;
-          })
-          .join("");
-        $("#departmentTableBody").html(rowsHtml);
+        var frag = document.createDocumentFragment();
+
+        result.data.departments.forEach(function (dept) {
+          var row = document.createElement("tr");
+
+          var name = document.createElement("td");
+          name.className = "align-middle text-nowrap";
+          name.textContent = dept.name;
+          row.append(name);
+
+          var loc = document.createElement("td");
+          loc.className = "align-middle text-nowrap d-none d-md-table-cell";
+          loc.textContent = dept.location;
+          row.append(loc);
+
+          var actionTd = document.createElement("td");
+          actionTd.className = "text-end";
+
+          // Edit button
+          var editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "btn btn-primary btn-sm me-1";
+          editButton.setAttribute("data-bs-toggle", "modal");
+          editButton.setAttribute("data-bs-target", "#editDepartmentModal");
+          editButton.setAttribute("data-id", dept.id);
+
+          var editIcon = document.createElement("i");
+          editIcon.className = "fa-solid fa-pencil fa-fw";
+          editButton.appendChild(editIcon);
+
+          // Delete button
+          var deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "btn btn-primary btn-sm";
+          deleteButton.setAttribute("data-id", dept.id);
+          deleteButton.setAttribute("data-bs-toggle", "modal");
+          deleteButton.setAttribute("data-bs-target", "#deleteDepartmentModal");
+
+          var deleteIcon = document.createElement("i");
+          deleteIcon.className = "fa-solid fa-trash fa-fw";
+          deleteButton.appendChild(deleteIcon);
+
+          actionTd.appendChild(editButton);
+          actionTd.appendChild(deleteButton);
+
+          row.appendChild(actionTd);
+
+          frag.appendChild(row);
+        });
+
+        var tableBody = document.getElementById("departmentTableBody");
+        tableBody.innerHTML = "";
+        tableBody.appendChild(frag);
       } else {
         $("#departmentTableBody").html(
           `<tr><td colspan="3" class="text-center text-danger">No departments found.</td></tr>`
@@ -127,7 +175,7 @@ function refreshDepartmentsTable() {
 
 function refreshLocationsTable() {
   $.ajax({
-    url: "libs/php/locations/getAllLocations.php",
+    url: "libs/php/database/getAllLocations.php",
     type: "POST",
     dataType: "json",
     data: {},
@@ -137,32 +185,54 @@ function refreshLocationsTable() {
         result.data &&
         Array.isArray(result.data.locations)
       ) {
-        let rowsHtml = result.data.locations
-          .map((loc) => {
-            return `
-                <tr>
-                  <td class="align-middle text-nowrap">${loc.name}</td>
-                  <td class="align-middle text-end text-nowrap">
-                    <button type="button" class="btn btn-primary btn-sm"
-                                        data-bs-toggle="modal"
-                      data-bs-target="#editLocationModal"
-                      data-id="${loc.id}">
-                      <i class="fa-solid fa-pencil fa-fw"></i>
-                    </button>
-                    <button
-                        type="button"
-                        data-id="${loc.id}"
-                        class="btn btn-primary btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteLocationModal">
-                      <i class="fa-solid fa-trash fa-fw"></i>
-                    </button>
-                  </td>
-                </tr>
-              `;
-          })
-          .join("");
-        $("#locationTableBody").html(rowsHtml);
+        var frag = document.createDocumentFragment();
+
+        result.data.locations.forEach(function (loc) {
+          var row = document.createElement("tr");
+
+          var name = document.createElement("td");
+          name.className = "align-middle text-nowrap";
+          name.textContent = loc.name;
+          row.append(name);
+
+          var actionTd = document.createElement("td");
+          actionTd.className = "text-end";
+
+          // Edit button
+          var editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "btn btn-primary btn-sm me-1";
+          editButton.setAttribute("data-bs-toggle", "modal");
+          editButton.setAttribute("data-bs-target", "#editLocationModal");
+          editButton.setAttribute("data-id", loc.id);
+
+          var editIcon = document.createElement("i");
+          editIcon.className = "fa-solid fa-pencil fa-fw";
+          editButton.appendChild(editIcon);
+
+          // Delete button
+          var deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "btn btn-primary btn-sm";
+          deleteButton.setAttribute("data-id", loc.id);
+          deleteButton.setAttribute("data-bs-toggle", "modal");
+          deleteButton.setAttribute("data-bs-target", "#deleteLocationModal");
+
+          var deleteIcon = document.createElement("i");
+          deleteIcon.className = "fa-solid fa-trash fa-fw";
+          deleteButton.appendChild(deleteIcon);
+
+          actionTd.appendChild(editButton);
+          actionTd.appendChild(deleteButton);
+
+          row.appendChild(actionTd);
+
+          frag.appendChild(row);
+        });
+
+        var tableBody = document.getElementById("locationTableBody");
+        tableBody.innerHTML = "";
+        tableBody.appendChild(frag);
       } else {
         $("#locationTableBody").html(
           `<tr><td colspan="2" class="text-center text-danger">No locations found.</td></tr>`

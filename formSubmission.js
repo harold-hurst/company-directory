@@ -14,7 +14,7 @@ $("#editPersonnelForm").on("submit", function (e) {
 
   // AJAX call to update personnel
   $.ajax({
-    url: "libs/php/employees/updateEmployee.php",
+    url: "libs/php/database/updateEmployee.php",
     type: "POST",
     dataType: "json",
     data: formData,
@@ -39,7 +39,7 @@ $("#deletePersonnelForm").on("submit", function (e) {
   const employeeId = $("#deletePersonnelEmployeeID").val();
 
   $.ajax({
-    url: "libs/php/employees/deleteEmployee.php",
+    url: "libs/php/database/deleteEmployee.php",
     type: "POST",
     dataType: "json",
     data: { id: employeeId },
@@ -72,7 +72,7 @@ $("#addPersonnelForm").on("submit", function (e) {
 
   // AJAX call to add personnel
   $.ajax({
-    url: "libs/php/employees/addEmployee.php",
+    url: "libs/php/database/addEmployee.php",
     type: "POST",
     dataType: "json",
     data: formData,
@@ -103,7 +103,7 @@ $("#editDepartmentForm").on("submit", function (e) {
   };
 
   $.ajax({
-    url: "libs/php/departments/updateDepartment.php",
+    url: "libs/php/database/updateDepartment.php",
     type: "POST",
     dataType: "json",
     data: formData,
@@ -129,7 +129,7 @@ $("#deleteDepartmentForm").on("submit", function (e) {
 
   // First check if the department has any employees
   $.ajax({
-    url: "libs/php/employees/getEmployeesByDepartment.php",
+    url: "libs/php/database/getEmployeesByDepartment.php",
     type: "POST",
     dataType: "json",
     data: { departmentID: departmentId },
@@ -147,7 +147,7 @@ $("#deleteDepartmentForm").on("submit", function (e) {
       } else {
         // Proceed with delete if no employees found
         $.ajax({
-          url: "libs/php/departments/deleteDepartment.php",
+          url: "libs/php/database/deleteDepartment.php",
           type: "POST",
           dataType: "json",
           data: { id: departmentId },
@@ -181,7 +181,7 @@ $("#addDepartmentForm").on("submit", function (e) {
   };
 
   $.ajax({
-    url: "libs/php/departments/addDepartment.php",
+    url: "libs/php/database/addDepartment.php",
     type: "POST",
     dataType: "json",
     data: formData,
@@ -211,7 +211,7 @@ $("#editLocationForm").on("submit", function (e) {
   };
 
   $.ajax({
-    url: "libs/php/locations/updateLocation.php",
+    url: "libs/php/database/updateLocation.php",
     type: "POST",
     dataType: "json",
     data: formData,
@@ -236,7 +236,7 @@ $("#deleteLocationForm").on("submit", function (e) {
   const locationId = $("#deleteLocationID").val();
   // First check if the location has any departments
   $.ajax({
-    url: "libs/php/departments/getDepartmentsByLocation.php",
+    url: "libs/php/database/getDepartmentsByLocation.php",
     type: "POST",
     dataType: "json",
     data: { locationID: locationId },
@@ -254,7 +254,7 @@ $("#deleteLocationForm").on("submit", function (e) {
       } else {
         // Proceed with delete if no departments found
         $.ajax({
-          url: "libs/php/locations/deleteLocation.php",
+          url: "libs/php/database/deleteLocation.php",
           type: "POST",
           dataType: "json",
           data: { id: locationId },
@@ -287,7 +287,7 @@ $("#addLocationForm").on("submit", function (e) {
   };
 
   $.ajax({
-    url: "libs/php/locations/addLocation.php",
+    url: "libs/php/database/addLocation.php",
     type: "POST",
     dataType: "json",
     data: formData,

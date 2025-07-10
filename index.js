@@ -73,7 +73,7 @@ $("#filterBtn").click(function () {
   $("#filterPersonnelModal").modal("show");
 
   $.ajax({
-    url: "libs/php/departments/getAllDepartments.php",
+    url: "libs/php/database/getAllDepartments.php",
     type: "POST",
     dataType: "json",
     data: {},
@@ -112,7 +112,7 @@ $("#filterBtn").click(function () {
   });
 
   $.ajax({
-    url: "libs/php/locations/getAllLocations.php",
+    url: "libs/php/database/getAllLocations.php",
     type: "POST",
     dataType: "json",
     data: {},
