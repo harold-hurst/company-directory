@@ -18,34 +18,43 @@ function refreshPersonnelTable() {
         result.data.forEach(function (item, index) {
           var row = document.createElement("tr");
 
+
+
           var name = document.createElement("td");
           var nameText = document.createTextNode(
             item.lastName + ", " + item.firstName
           );
+          name.className = "align-middle text-nowrap";
+
           name.append(nameText);
 
           row.append(name);
 
+
+
           var dept = document.createElement("td");
           var deptText = document.createTextNode(item.department);
+          dept.className = "align-middle text-nowrap d-none d-md-table-cell";
           dept.append(deptText);
 
           row.append(dept);
 
           var loc = document.createElement("td");
           var locText = document.createTextNode(item.location);
+          loc.className = "align-middle text-nowrap d-none d-md-table-cell";
           loc.append(locText);
 
           row.append(loc);
 
           var email = document.createElement("td");
           var emailText = document.createTextNode(item.email);
+          email.className = "align-middle text-nowrap d-none d-md-table-cell";
           email.append(emailText);
 
           row.append(email);
 
           var actionTd = document.createElement("td");
-          actionTd.className = "text-end";
+          actionTd.className = "align-middle text-end text-nowrap";
 
           // --- Edit Button ---
           var editButton = document.createElement("button");
@@ -124,7 +133,7 @@ function refreshDepartmentsTable() {
           row.append(loc);
 
           var actionTd = document.createElement("td");
-          actionTd.className = "text-end";
+          actionTd.className = "align-middle text-end text-nowrap";
 
           // Edit button
           var editButton = document.createElement("button");
@@ -198,7 +207,7 @@ function refreshLocationsTable() {
           row.append(name);
 
           var actionTd = document.createElement("td");
-          actionTd.className = "text-end";
+          actionTd.className = "align-middle text-end text-nowrap";
 
           // Edit button
           var editButton = document.createElement("button");
