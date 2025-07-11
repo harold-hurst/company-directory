@@ -260,10 +260,6 @@ function activatePersonnelTab() {
   }
 }
 
-
-
-
-
 // POPULATE MODALS
 
 // Populate editPersonnelModal when shown
@@ -537,7 +533,8 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
   // Remove dependency/check alerts and enable the button if present
   $("#deleteDepartmentModal .modal-body #cannotDeleteMessage").remove();
   $("#deleteDepartmentModal .modal-body #confirmDeleteMessage").remove();
-  $("#confirmDeleteDepartmentBtn").prop("disabled", false);
+  $("#confirmDeleteDepartmentBtn").show();
+  $("#dontDeleteDepartmentBtn").text("NO");
 
   // First check if the department has any employees
   $.ajax({
@@ -564,7 +561,8 @@ $("#deleteDepartmentModal").on("show.bs.modal", function (e) {
           );
         }
 
-        $("#confirmDeleteDepartmentBtn").prop("disabled", true);
+        $("#confirmDeleteDepartmentBtn").hide();
+        $("#dontDeleteDepartmentBtn").text("CLOSE");
 
         return;
       } else {
@@ -624,7 +622,8 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
   // Remove dependency/check alerts and enable the button if present
   $("#deleteLocationModal .modal-body #cannotDeleteLocationMessage").remove();
   $("#deleteLocationModal .modal-body #confirmDeleteLocationMessage").remove();
-  $("#confirmDeleteLocationBtn").prop("disabled", false);
+  $("#confirmDeleteLocationBtn").show();
+  $("#dontDeleteLocationBtn").text("NO");
 
   // First check if the location has any departments
   $.ajax({
@@ -650,7 +649,8 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
           );
         }
 
-        $("#confirmDeleteLocationBtn").prop("disabled", true);
+        $("#confirmDeleteLocationBtn").hide();
+        $("#dontDeleteLocationBtn").text("CLOSE");
 
         return;
       } else {
@@ -695,14 +695,6 @@ $("#deleteLocationModal").on("show.bs.modal", function (e) {
     },
   });
 });
-
-
-
-
-
-
-
-
 
 // FORM SUBMISSION HANDLING
 
@@ -949,7 +941,6 @@ $("#deleteLocationForm").on("submit", function (e) {
     dataType: "json",
     data: { locationID: locationId },
     success: function (result) {
-
       if (
         result.status.code == 200 &&
         result.data &&
@@ -1013,22 +1004,7 @@ $("#addLocationForm").on("submit", function (e) {
   });
 });
 
-
-
-
-
-
-
-
 // INDEX.JS
-
-
-
-
-
-
-
-
 
 // Populate three tables on page load
 $(document).ready(function () {
@@ -1066,23 +1042,33 @@ $("#searchInp").on("keyup", function () {
 $("#refreshBtn").click(function () {
   // Clear the search input
   $("#searchInp").val("");
+
+  $("#refreshBtn").click(function () {
+    if ($("#personnelBtn").hasClass("active")) {
+      refreshPersonnelTable();
+    } else {
+      if ($("#departmentsBtn").hasClass("active")) {
+        refreshDepartmentsTable();
+      } else {
+        refreshLocationsTable();
+      }
+    }
+  });
+
   // Refresh the all tables
-  refreshPersonnelTable();
-  refreshDepartmentsTable();
-  refreshLocationsTable();
-  activatePersonnelTab();
+
+  // activatePersonnelTab();
 
   // enable filter button if not already enabled
-  if ($("#filterBtn").prop("disabled")) {
-    $("#filterBtn").prop("disabled", false);
-  }
+  // if ($("#filterBtn").prop("disabled")) {
+  //   $("#filterBtn").prop("disabled", false);
+  // }
 
   // remove the btn-danger class from filterBtn if present
-  $("#filterBtn").removeClass("btn-danger");
+  // $("#filterBtn").removeClass("btn-danger");
 
-  $("#filterLocation").val("All");
-  $("#filterDepartment").val("All");
-
+  // $("#filterLocation").val("All");
+  // $("#filterDepartment").val("All");
 });
 
 // Open appropriate modal when the add button is clicked
@@ -1220,7 +1206,9 @@ $("#filterLocation").change(function () {
 
 // Show all rows in the personnel table when the personnel button is clicked
 $("#personnelBtn").click(function () {
-  $("#personnelTableBody").find("tr").show();
+  // $("#personnelTableBody").find("tr").show();
+  refreshPersonnelTable();
+
   // enable filter button if not already enabled
   if ($("#filterBtn").prop("disabled")) {
     $("#filterBtn").prop("disabled", false);
@@ -1229,7 +1217,9 @@ $("#personnelBtn").click(function () {
 
 // Show all rows in the departments and locations tables when their respective buttons are clicked
 $("#departmentsBtn").click(function () {
-  $("#departmentTableBody").find("tr").show();
+  // $("#departmentTableBody").find("tr").show();
+  refreshDepartmentsTable();
+
   // disable filter button if not already disabled
   if (!$("#filterBtn").prop("disabled")) {
     $("#filterBtn").prop("disabled", true);
@@ -1238,7 +1228,9 @@ $("#departmentsBtn").click(function () {
 
 // Show all rows in the locations table when the locations button is clicked
 $("#locationsBtn").click(function () {
-  $("#locationTableBody").find("tr").show();
+  // $("#locationTableBody").find("tr").show();
+  refreshLocationsTable();
+
   // disable filter button if not already disabled
   if (!$("#filterBtn").prop("disabled")) {
     $("#filterBtn").prop("disabled", true);
