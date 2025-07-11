@@ -13,12 +13,10 @@ function refreshPersonnelTable() {
         result.data &&
         Array.isArray(result.data)
       ) {
-        var frag = document.createDocumentFragment();
+        var personnelFrag = document.createDocumentFragment();
 
         result.data.forEach(function (item, index) {
           var row = document.createElement("tr");
-
-
 
           var name = document.createElement("td");
           var nameText = document.createTextNode(
@@ -29,8 +27,6 @@ function refreshPersonnelTable() {
           name.append(nameText);
 
           row.append(name);
-
-
 
           var dept = document.createElement("td");
           var deptText = document.createTextNode(item.department);
@@ -87,10 +83,12 @@ function refreshPersonnelTable() {
           // Append the <td> to the row
           row.appendChild(actionTd);
 
-          frag.append(row);
+          personnelFrag.append(row);
         });
 
-        document.getElementById("personnelTableBody").append(frag);
+        var tableBody = document.getElementById("personnelTableBody");
+        tableBody.innerHTML = "";
+        tableBody.appendChild(personnelFrag);
       } else {
         $("#personnelTableBody").html(
           `<tr><td colspan="6" class="text-center text-danger">No personnel found.</td></tr>`
@@ -117,7 +115,7 @@ function refreshDepartmentsTable() {
         result.data &&
         Array.isArray(result.data.departments)
       ) {
-        var frag = document.createDocumentFragment();
+        var departmentsFrag = document.createDocumentFragment();
 
         result.data.departments.forEach(function (dept) {
           var row = document.createElement("tr");
@@ -164,12 +162,12 @@ function refreshDepartmentsTable() {
 
           row.appendChild(actionTd);
 
-          frag.appendChild(row);
+          departmentsFrag.appendChild(row);
         });
 
         var tableBody = document.getElementById("departmentTableBody");
         tableBody.innerHTML = "";
-        tableBody.appendChild(frag);
+        tableBody.appendChild(departmentsFrag);
       } else {
         $("#departmentTableBody").html(
           `<tr><td colspan="3" class="text-center text-danger">No departments found.</td></tr>`
@@ -196,7 +194,7 @@ function refreshLocationsTable() {
         result.data &&
         Array.isArray(result.data.locations)
       ) {
-        var frag = document.createDocumentFragment();
+        var locationsFrag = document.createDocumentFragment();
 
         result.data.locations.forEach(function (loc) {
           var row = document.createElement("tr");
@@ -238,12 +236,12 @@ function refreshLocationsTable() {
 
           row.appendChild(actionTd);
 
-          frag.appendChild(row);
+          locationsFrag.appendChild(row);
         });
 
         var tableBody = document.getElementById("locationTableBody");
         tableBody.innerHTML = "";
-        tableBody.appendChild(frag);
+        tableBody.appendChild(locationsFrag);
       } else {
         $("#locationTableBody").html(
           `<tr><td colspan="2" class="text-center text-danger">No locations found.</td></tr>`
@@ -730,7 +728,6 @@ $("#editPersonnelForm").on("submit", function (e) {
     success: function (result) {
       if (result.status.code == 200) {
         $("#editPersonnelModal").modal("hide");
-        refreshPersonnelTable();
       } else {
         alert("Error updating employee: " + result.status.description);
       }
@@ -739,6 +736,9 @@ $("#editPersonnelForm").on("submit", function (e) {
       alert("AJAX error: " + textStatus);
     },
   });
+
+  // Refresh the personnel table after successful update
+  refreshPersonnelTable();
 });
 
 // Delete personnel form submission handler
@@ -819,7 +819,6 @@ $("#editDepartmentForm").on("submit", function (e) {
     success: function (result) {
       if (result.status.code == 200) {
         $("#editDepartmentModal").modal("hide");
-        refreshDepartmentsTable();
       } else {
         alert("Error updating department: " + result.status.description);
       }
@@ -828,6 +827,9 @@ $("#editDepartmentForm").on("submit", function (e) {
       alert("AJAX error: " + textStatus);
     },
   });
+
+  // Refresh the departments table after successful update
+  refreshDepartmentsTable();
 });
 
 // Delete department form submission handler
@@ -927,7 +929,6 @@ $("#editLocationForm").on("submit", function (e) {
     success: function (result) {
       if (result.status.code == 200) {
         $("#editLocationModal").modal("hide");
-        refreshLocationsTable();
       } else {
         alert("Error updating location: " + result.status.description);
       }
@@ -936,6 +937,9 @@ $("#editLocationForm").on("submit", function (e) {
       alert("AJAX error: " + textStatus);
     },
   });
+
+  // Refresh the locations table after successful update
+  refreshLocationsTable();
 });
 
 // Delete location form submission handler
@@ -1031,21 +1035,22 @@ $(document).ready(function () {
 $("#searchInp").on("keyup", function () {
   const searchTerm = $(this).val().toLowerCase();
 
-  // Find the active table body
   let tableBody;
   if ($("#personnelBtn").hasClass("active")) {
     tableBody = $("#personnelTableBody");
   } else if ($("#departmentsBtn").hasClass("active")) {
     tableBody = $("#departmentTableBody");
-  } else {
+  } else if ($("#locationsBtn").hasClass("active")) {
     tableBody = $("#locationTableBody");
   }
 
-  // For each tr in the tale body, check if the text includes the search term
-  tableBody.find("tr").each(function () {
-    const rowText = $(this).text().toLowerCase();
-    $(this).toggle(rowText.indexOf(searchTerm) > -1);
-  });
+  // Use a timeout to ensure the table is refreshed before filtering
+  setTimeout(function () {
+    tableBody.find("tr").each(function () {
+      const rowText = $(this).text().toLowerCase();
+      $(this).toggle(rowText.indexOf(searchTerm) > -1);
+    });
+  }, 100);
 });
 
 $("#refreshBtn").click(function () {
