@@ -1043,19 +1043,15 @@ $("#refreshBtn").click(function () {
   // Clear the search input
   $("#searchInp").val("");
 
-  $("#refreshBtn").click(function () {
-    if ($("#personnelBtn").hasClass("active")) {
-      refreshPersonnelTable();
-    } else {
-      if ($("#departmentsBtn").hasClass("active")) {
-        refreshDepartmentsTable();
-      } else {
-        refreshLocationsTable();
-      }
+  if ($("#personnelBtn").hasClass("active")) {
+    refreshPersonnelTable();
+  } else {
+    if ($("#departmentsBtn").hasClass("active")) {
+      refreshDepartmentsTable();
+    } else if ($("#locationsBtn").hasClass("active")) {
+      refreshLocationsTable();
     }
-  });
-
-  // Refresh the all tables
+  }
 
   // activatePersonnelTab();
 
@@ -1174,17 +1170,26 @@ $("#filterDepartment").change(function () {
 
   const dept = $("#filterDepartment").val().toLowerCase();
 
-  $("#personnelTableBody tr").each(function () {
-    const row = $(this);
-    const departmentCell = row.find("td").eq(1).text().toLowerCase();
+  if (dept === "all") {
+    // If "All" is selected, show all rows
+    $("#personnelTableBody tr").show();
+    // add a colour to filter button when a filter is applied
+    $("#filterBtn").removeClass("btn-danger");
+  } else {
+    // Otherwise, filter rows based on the selected department
 
-    const deptMatch = departmentCell.indexOf(dept) > -1;
+    $("#personnelTableBody tr").each(function () {
+      const row = $(this);
+      const departmentCell = row.find("td").eq(1).text().toLowerCase();
 
-    row.toggle(deptMatch);
-  });
+      const deptMatch = departmentCell.indexOf(dept) > -1;
 
-  // add a colour to filter button when a filter is applied
-  $("#filterBtn").addClass("btn-danger");
+      row.toggle(deptMatch);
+    });
+
+    // add a colour to filter button when a filter is applied
+    $("#filterBtn").addClass("btn-danger");
+  }
 });
 
 $("#filterLocation").change(function () {
@@ -1192,16 +1197,23 @@ $("#filterLocation").change(function () {
 
   const loc = $("#filterLocation").val().toLowerCase();
 
-  $("#personnelTableBody tr").each(function () {
-    const row = $(this);
-    const locationCell = row.find("td").eq(2).text().toLowerCase();
+  if (loc === "all") {
+    // If "All" is selected, show all rows
+    $("#personnelTableBody tr").show();
+    // add a colour to filter button when a filter is applied
+    $("#filterBtn").removeClass("btn-danger");
+  } else {
+    $("#personnelTableBody tr").each(function () {
+      const row = $(this);
+      const locationCell = row.find("td").eq(2).text().toLowerCase();
 
-    const locMatch = locationCell.indexOf(loc) > -1;
+      const locMatch = locationCell.indexOf(loc) > -1;
 
-    row.toggle(locMatch);
-  });
-  // add a colour to filter button when a filter is applied
-  $("#filterBtn").addClass("btn-danger");
+      row.toggle(locMatch);
+    });
+    // add a colour to filter button when a filter is applied
+    $("#filterBtn").addClass("btn-danger");
+  }
 });
 
 // Show all rows in the personnel table when the personnel button is clicked
